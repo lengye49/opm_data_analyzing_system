@@ -13,6 +13,5 @@ def get_real_level(level, enhance):
         return (level - 240) * 10 + 240 + enhance
 
 
-def get_base_attribute(base_att, level_growth, quality_per, quality_value, grade_value):
-    return level_growth * quality_per/10000 + 1
+
 
