@@ -128,6 +128,35 @@ def save_hero_grade_growth(hero_id, hp_v, atk_v, def_v):
     wb.save(path)
 
 
+def save_hero_mechanical_power(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_pvp, def_pvp):
+    wb = get_wb(hero_id)
+    ws = get_ws(wb, 'mechanical')
+    ws['A1'] = '等级'
+    ws['B1'] = '生命_pve'
+    ws['C1'] = '攻击_pve'
+    ws['D1'] = '防御_pve'
+    ws['E1'] = '生命_pvp'
+    ws['F1'] = '攻击_pvp'
+    ws['G1'] = '防御_pvp'
+    ws['H1'] = 'pve输出'
+    ws['I1'] = 'pvp输出'
+
+    for i in range(0, 30):
+        ws['A' + str(i + 2)] = i + 1
+        ws['B' + str(i + 2)] = hp_pve[i]
+        ws['C' + str(i + 2)] = atk_pve[i]
+        ws['D' + str(i + 2)] = def_pve[i]
+        ws['E' + str(i + 2)] = hp_pvp[i]
+        ws['F' + str(i + 2)] = atk_pvp[i]
+        ws['G' + str(i + 2)] = def_pvp[i]
+        s1 = '21,' + str(hp_pve[i]) + ';31,' + str(atk_pve[i]) + ';41,' + str(def_pve[i])
+        s2 = '21,' + str(hp_pvp[i]) + ';31,' + str(atk_pvp[i]) + ';41,' + str(def_pvp[i])
+        ws['H' + str(i + 2)] = s1
+        ws['I' + str(i + 2)] = s2
+
+    wb.save(path)
+
+
 def save_hero_talent_growth(hero_id, talent_lv, hp_per, atk_per, def_per, crit, crit_res, precise, parry, dmg_res):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'talent')

@@ -77,7 +77,7 @@ ATK_GRADE_VALUE_PARAM = [0.0125, 0.015, 0.0225, 0.0365, 0.056, 0.0835, 0.125, 0.
 DEF_GRADE_VALUE_PARAM = [0.005, 0.00675, 0.01125, 0.020075, 0.0336, 0.054275, 0.0875, 0.13125, 0.2, 0.30175, 0.45,
                          0.684, 1, 1, 1, 1, 1, 1, 1, 1]
 
-# 限制器PVE属性成长参数
+# 限制器成长参数
 LIMITER_PVE_VALUE_PARAM = [0.20799999792, 0.271, 0.2492, 0.231, 0.2018, 0.1606, 0.1237, 0.06375, 0.03305, 0.0196]
 LIMITER_PVE_AURA_PARAM = [0.20799999792, 0.271, 0.2492, 0.231, 0.2018, 0.1606, 0.1237, 0.06375, 0.03305, 0.0196]
 LIMITER_PVE_TYPE_AURA_PARAM = [0.10399999896, 0.1355, 0.1246, 0.1155, 0.1009, 0.0803, 0.06185, 0.031875, 0.016525,
@@ -323,7 +323,7 @@ for i in hero_list:
     def_limiter_per = [40, 80, 120, 160, 200, 240, 280, 315, 335, 350]
     _level_list_1 = [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400]
     _quality_list_1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-    hp_max, atk_max, def_max = cal_property(_level_list_1, _quality_list_1, hp_limiter_per[9]/10000, False)
+    hp_max, atk_max, def_max = cal_property(_level_list_1, _quality_list_1, hp_limiter_per[9] / 10000, False)
 
     _hp_2 = df_limiter.loc[v, '_hp']
     _atk_2 = df_limiter.loc[v, '_atk']
@@ -350,7 +350,8 @@ for i in hero_list:
     hp_limiter_aura_per = [40, 80, 120, 160, 200, 240, 280, 315, 335, 350]
     atk_limiter_aura_per = [40, 80, 120, 160, 200, 240, 280, 315, 335, 350]
     def_limiter_aura_per = [40, 80, 120, 160, 200, 240, 280, 315, 335, 350]
-    hp_max_aura, atk_max_aura, def_max_aura = cal_property(_level_list_1, _quality_list_1, hp_limiter_aura_per[9]/10000,False)
+    hp_max_aura, atk_max_aura, def_max_aura = cal_property(_level_list_1, _quality_list_1,
+                                                           hp_limiter_aura_per[9] / 10000, False)
 
     _hp_2 = df_limiter.loc[v, '_hp']
     _atk_2 = df_limiter.loc[v, '_atk']
@@ -385,7 +386,9 @@ for i in hero_list:
         hp_limiter_type_aura_per = [20, 40, 60, 80, 100, 120, 140, 157, 167, 175]
         atk_limiter_type_aura_per = [20, 40, 60, 80, 100, 120, 140, 157, 167, 175]
         def_limiter_type_aura_per = [20, 40, 60, 80, 100, 120, 140, 157, 167, 175]
-        hp_max_type_aura, atk_max_type_aura, def_max_type_aura = cal_property(_level_list_1, _quality_list_1,hp_limiter_type_aura_per[9]/10000, False)
+        hp_max_type_aura, atk_max_type_aura, def_max_type_aura = cal_property(_level_list_1, _quality_list_1,
+                                                                              hp_limiter_type_aura_per[9] / 10000,
+                                                                              False)
 
         _hp_2 = df_limiter.loc[v, '_hp']
         _atk_2 = df_limiter.loc[v, '_atk']
@@ -402,18 +405,18 @@ for i in hero_list:
     # 1. 计算标准等级基础属性
     hero_level_list_pvp = [256, 258, 260, 262, 264, 266, 268, 272, 276, 280]
     hero_quality_list_pvp = [9, 10, 11, 12, 13, 14, 15, 16, 16, 16, 16, 16, 16]
-    # hp_base_pvp, atk_base_pvp, def_base_pvp = cal_property(hero_level_list_pvp, hero_quality_list_pvp)
+    hp_base_pvp, atk_base_pvp, def_base_pvp = cal_property(hero_level_list_pvp, hero_quality_list_pvp)
 
-    hp_base_pvp = {256: 250183.081632653, 258: 259467.367346939, 260: 269133.102040816, 262: 285515.897959184,
-                   264: 296227.693877551, 266: 307373.163265306, 268: 318972.551020408, 272: 343608.244897959,
-                   276: 370287.979591837, 280: 399185.326530612}
-    atk_base_pvp = {256: 43701.8979591837, 258: 45323.9795918367, 260: 47011.1020408163, 262: 49820.6326530612,
-                    264: 51688.9387755102, 266: 53634.3673469388, 268: 55657.0816326531, 272: 59955.2448979592,
-                    276: 64610.0408163265, 280: 69653.4285714286}
-    def_base_pvp = {256: 36370.5102040816, 258: 38052.8775510204, 260: 39805.4285714286, 262: 42869,
-                    264: 44827.4285714286,
-                    266: 46865.387755102, 268: 48982.7755102041, 272: 53484.8979591837, 276: 58355.7755102041,
-                    280: 63631.2653061224}
+    # hp_base_pvp = {256: 250183.081632653, 258: 259467.367346939, 260: 269133.102040816, 262: 285515.897959184,
+    #                264: 296227.693877551, 266: 307373.163265306, 268: 318972.551020408, 272: 343608.244897959,
+    #                276: 370287.979591837, 280: 399185.326530612}
+    # atk_base_pvp = {256: 43701.8979591837, 258: 45323.9795918367, 260: 47011.1020408163, 262: 49820.6326530612,
+    #                 264: 51688.9387755102, 266: 53634.3673469388, 268: 55657.0816326531, 272: 59955.2448979592,
+    #                 276: 64610.0408163265, 280: 69653.4285714286}
+    # def_base_pvp = {256: 36370.5102040816, 258: 38052.8775510204, 260: 39805.4285714286, 262: 42869,
+    #                 264: 44827.4285714286,
+    #                 266: 46865.387755102, 268: 48982.7755102041, 272: 53484.8979591837, 276: 58355.7755102041,
+    #                 280: 63631.2653061224}
 
     # 2. 计算限制器基础属性
     df_limiter = pd.read_excel('design/limiter_offset.xlsx', sheet_name='all', index_col=0, header=0)
@@ -425,7 +428,8 @@ for i in hero_list:
     def_limiter_per_pvp = [35, 70, 105, 140, 175, 210, 245, 280, 315, 350]
     _level_list_1_pvp = [280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280]
     _quality_list_1_pvp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-    hp_max_pvp, atk_max_pvp, def_max_pvp = cal_property(_level_list_1_pvp, _quality_list_1_pvp, hp_limiter_per_pvp[9]/10000,False)
+    hp_max_pvp, atk_max_pvp, def_max_pvp = cal_property(_level_list_1_pvp, _quality_list_1_pvp,
+                                                        hp_limiter_per_pvp[9] / 10000, False)
 
     _hp_2 = df_limiter.loc[v, '_hp']
     _atk_2 = df_limiter.loc[v, '_atk']
@@ -447,7 +451,7 @@ for i in hero_list:
     atk_limiter_aura_per_pvp = [35, 70, 105, 140, 175, 210, 245, 280, 315, 350]
     def_limiter_aura_per_pvp = [35, 70, 105, 140, 175, 210, 245, 280, 315, 350]
     hp_max_aura_pvp, atk_max_aura_pvp, def_max_aura_pvp = cal_property(_level_list_1_pvp, _quality_list_1_pvp,
-                                                                       hp_limiter_aura_per_pvp[9]/10000, False)
+                                                                       hp_limiter_aura_per_pvp[9] / 10000, False)
 
     _hp_2 = df_hero.loc[_id, '_aura_hp']
     _atk_2 = df_hero.loc[_id, '_aura_atk']
@@ -478,7 +482,8 @@ for i in hero_list:
         hp_limiter_type_aura_per_pvp = []
         atk_limiter_type_aura_per_pvp = []
         def_limiter_type_aura_per_pvp = []
-        hp_max_type_aura_pvp, atk_max_type_aura_pvp, def_max_type_aura_pvp = cal_property(_level_list_1_pvp,_quality_list_1_pvp, 0, False)
+        hp_max_type_aura_pvp, atk_max_type_aura_pvp, def_max_type_aura_pvp = cal_property(_level_list_1_pvp,
+                                                                                          _quality_list_1_pvp, 0, False)
     else:
         df_limiter = pd.read_excel('design/limiter_offset.xlsx', sheet_name=_type, index_col=0, header=0)
         hp_limiter_type_aura_pvp = []
@@ -487,7 +492,10 @@ for i in hero_list:
         hp_limiter_type_aura_per_pvp = [17, 35, 52, 70, 87, 105, 122, 140, 157, 175]
         atk_limiter_type_aura_per_pvp = [17, 35, 52, 70, 87, 105, 122, 140, 157, 175]
         def_limiter_type_aura_per_pvp = [17, 35, 52, 70, 87, 105, 122, 140, 157, 175]
-        hp_max_type_aura_pvp, atk_max_type_aura_pvp, def_max_type_aura_pvp = cal_property(_level_list_1_pvp,_quality_list_1_pvp,hp_limiter_type_aura_per_pvp[9]/10000, False)
+        hp_max_type_aura_pvp, atk_max_type_aura_pvp, def_max_type_aura_pvp = cal_property(_level_list_1_pvp,
+                                                                                          _quality_list_1_pvp,
+                                                                                          hp_limiter_type_aura_per_pvp[
+                                                                                              9] / 10000, False)
 
         _hp_2 = df_limiter.loc[v, '_hp']
         _atk_2 = df_limiter.loc[v, '_atk']
@@ -516,3 +524,34 @@ for i in hero_list:
                                    atk_max_type_aura_pvp, def_max_type_aura_pvp)
 
     # 计算机械核心属性
+    hp_400 = hp_base[400]
+    atk_400 = atk_base[400]
+    def_400 = def_base[400]
+
+    hp_280 = hp_base_pvp[280]
+    atk_280 = atk_base_pvp[280]
+    def_280 = def_base_pvp[280]
+
+    hp_mechanical_pve = []
+    atk_mechanical_pve = []
+    def_mechanical_pve = []
+
+    hp_mechanical_pvp = []
+    atk_mechanical_pvp = []
+    def_mechanical_pvp = []
+
+    for j in range(0, 30):
+        v_pve = pow((j + 1) / 30, 2.1) * 1600
+        hp_mechanical_pve.append(int(v_pve * hp_400 / 10000))
+        atk_mechanical_pve.append(int(v_pve * atk_400 / 10000))
+        def_mechanical_pve.append(int(v_pve * def_400 / 10000))
+
+        # v_pvp = 1722 / 30 * (j + 1)
+        v_pvp = v_pve  # 临时处理
+        hp_mechanical_pvp.append(int(v_pvp * hp_280 / 10000))
+        atk_mechanical_pvp.append(int(v_pvp * atk_280 / 10000))
+        def_mechanical_pvp.append(int(v_pvp * def_280 / 10000))
+
+    sv.save_hero_mechanical_power(_id, hp_mechanical_pve, atk_mechanical_pve, def_mechanical_pve,
+                                  hp_mechanical_pvp, atk_mechanical_pvp, def_mechanical_pvp)
+    print(i)
