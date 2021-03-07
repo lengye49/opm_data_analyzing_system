@@ -387,3 +387,58 @@ def save_hero_limiter_growth(hero_id, hp_pve_v, hp_pve_per, hp_pve_aura, hp_pve_
         ws['AQ' + str(i + 2)] = s6
 
     wb.save(path)
+
+
+def save_hero_status(hero_id, df, hp, atk, de, crit, crit_res, crit_dmg, precise, parry, dmg_res):
+    wb = get_wb(hero_id)
+    ws = get_ws(wb, 'status')
+
+    ws['A1'] = '战斗类型'
+    ws['B1'] = '品质'
+    ws['C1'] = 'pve等级'
+    ws['D1'] = '等级强化'
+    ws['E1'] = '装备品质%'
+    ws['F1'] = '装备强化%'
+    ws['G1'] = '天赋'
+    ws['H1'] = '研究所核心'
+    ws['I1'] = '职阶'
+    ws['J1'] = '限制器'
+    ws['K1'] = '机械核心'
+
+    ws['L1'] = 'hp'
+    ws['M1'] = 'atk'
+    ws['N1'] = 'def'
+    ws['O1'] = 'crit'
+    ws['P1'] = 'crit_res'
+    ws['Q1'] = 'crit_dmg'
+    ws['R1'] = 'precise'
+    ws['S1'] = 'parry'
+    ws['T1'] = 'dmg_res'
+
+
+    l = df.index.values
+    for i in len(l):
+        k = l[i]
+        ws['A' + str(i + 2)] = df.loc[k, '_type']
+        ws['B' + str(i + 2)] = df.loc[k, '_quality']
+        ws['C' + str(i + 2)] = df.loc[k, '_pve_level']
+        ws['D' + str(i + 2)] = df.loc[k, '_lv_enhance']
+        ws['E' + str(i + 2)] = df.loc[k, '_e_qua']
+        ws['F' + str(i + 2)] = df.loc[k, '_e_enhance']
+        ws['G' + str(i + 2)] = df.loc[k, '_talent']
+        ws['H' + str(i + 2)] = df.loc[k, '_core']
+        ws['I' + str(i + 2)] = df.loc[k, '_job']
+        ws['J' + str(i + 2)] = df.loc[k, '_limiter']
+        ws['K' + str(i + 2)] = df.loc[k, '_mechanical']
+
+        ws['L' + str(i + 2)] = hp[i]
+        ws['M' + str(i + 2)] = atk[i]
+        ws['N' + str(i + 2)] = de[i]
+        ws['O' + str(i + 2)] = crit[i]
+        ws['P' + str(i + 2)] = crit_res[i]
+        ws['Q' + str(i + 2)] = crit_dmg[i]
+        ws['R' + str(i + 2)] = precise[i]
+        ws['S' + str(i + 2)] = parry[i]
+        ws['T' + str(i + 2)] = dmg_res[i]
+
+    wb.save(path)
