@@ -89,8 +89,10 @@ def get_dict_from_str(_str,_name='AttributeInfo'):
     _dict = eval(_str)
     return pd.Series({_name: _dict})
 
+
 def get_aura_dict_from_str(_str):
     return get_dict_from_str(_str,'AuraAttribute')
+
 
 def get_type_aura_dict_from_str(_str):
     return get_dict_from_str(_str,'TypeAuraAttribute')

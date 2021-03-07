@@ -24,7 +24,7 @@ def get_ws(wb, _name):
         return wb.create_sheet(_name)
 
 
-def save_hero_basic_info(hero_id, hero_name, hero_camp, hero_profession, hero_job):
+def save_hero_basic_info(hero_id, hero_name, hero_camp, hero_profession, hero_job, hp_init, atk_init, def_init):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'basic')
 
@@ -43,8 +43,17 @@ def save_hero_basic_info(hero_id, hero_name, hero_camp, hero_profession, hero_jo
     ws['A5'] = '职阶'
     ws['B5'] = HERO_JOB[hero_job - 30001]
 
-    ws['A2'] = '英雄名称'
-    ws['B2'] = hero_name
+    ws['A6'] = '初始生命'
+    ws['B6'] = hp_init
+
+    ws['A7'] = '初始攻击'
+    ws['B7'] = atk_init
+
+    ws['A8'] = '初始防御'
+    ws['B8'] = def_init
+
+    ws['A9'] = '初始暴击'
+    ws['B9'] = 500
 
     wb.save(path)
 
@@ -77,7 +86,7 @@ def save_hero_quality_max_value(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_p
                                 hp_pve_aura, atk_pve_aura, def_pve_aura,
                                 hp_pvp_aura, atk_pvp_aura, def_pvp_aura,
                                 hp_pve_type_aura, atk_pve_type_aura, def_pve_type_aura,
-                                hp_pvp_type_aura, atk_pvp_type_aura, def_pvp_type_aura,):
+                                hp_pvp_type_aura, atk_pvp_type_aura, def_pvp_type_aura, ):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'quality')
 
@@ -88,17 +97,41 @@ def save_hero_quality_max_value(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_p
     ws['L1'] = 'PVP属性最大值'
     ws['M1'] = 'PVP属性最大值'
 
+    ws['N1'] = 'PVE属性最大值_HP'
+    ws['O1'] = 'PVE属性最大值_ATK'
+    ws['P1'] = 'PVE属性最大值_DEF'
+
+    ws['Q1'] = 'PVE光环最大值'
+    ws['R1'] = 'PVE光环最大值'
+    ws['S1'] = 'PVE光环最大值'
+
+    ws['T1'] = 'PVE阵营光环最大值'
+    ws['U1'] = 'PVE阵营光环最大值'
+    ws['V1'] = 'PVE阵营光环最大值'
+
+    ws['W1'] = 'PVP属性最大值_HP'
+    ws['X1'] = 'PVP属性最大值_ATK'
+    ws['Y1'] = 'PVP属性最大值_DEF'
+
+    ws['Z1'] = 'PVP光环最大值'
+    ws['AA1'] = 'PVP光环最大值'
+    ws['AB1'] = 'PVP光环最大值'
+
+    ws['AC1'] = 'PVP阵营光环最大值'
+    ws['AD1'] = 'PVP阵营光环最大值'
+    ws['AE1'] = 'PVP阵营光环最大值'
+
     for i in range(0, 16):
-        s1 = '21,' + str(int(hp_pve[i + 1])) + ';31,' + str(int(atk_pve[i + 1])) + ';41,' + str(int(def_pve[i + 1]))
-        s2 = '21,' + str(int(hp_pve_aura[i + 1])) + ';31,' + str(int(atk_pve_aura[i + 1])) + ';41,' + str(
-            int(def_pve_aura[i + 1]))
-        s3 = '21,' + str(int(hp_pve_type_aura[i + 1])) + ';31,' + str(int(atk_pve_type_aura[i + 1])) + ';41,' + str(
-            int(def_pve_type_aura[i + 1]))
-        s4 = '21,' + str(int(hp_pvp[i + 1])) + ';31,' + str(int(atk_pvp[i + 1])) + ';41,' + str(int(def_pvp[i + 1]))
-        s5 = '21,' + str(int(hp_pvp_aura[i + 1])) + ';31,' + str(int(atk_pvp_aura[i + 1])) + ';41,' + str(
-            int(def_pvp_aura[i + 1]))
-        s6 = '21,' + str(int(hp_pvp_type_aura[i + 1])) + ';31,' + str(int(atk_pvp_type_aura[i + 1])) + ';41,' + str(
-            int(def_pvp_type_aura[i + 1]))
+        s1 = '21,' + str(int(hp_pve[i])) + ';31,' + str(int(atk_pve[i])) + ';41,' + str(int(def_pve[i]))
+        s2 = '21,' + str(int(hp_pve_aura[i])) + ';31,' + str(int(atk_pve_aura[i])) + ';41,' + str(
+            int(def_pve_aura[i]))
+        s3 = '21,' + str(int(hp_pve_type_aura[i])) + ';31,' + str(int(atk_pve_type_aura[i])) + ';41,' + str(
+            int(def_pve_type_aura[i]))
+        s4 = '21,' + str(int(hp_pvp[i])) + ';31,' + str(int(atk_pvp[i])) + ';41,' + str(int(def_pvp[i]))
+        s5 = '21,' + str(int(hp_pvp_aura[i])) + ';31,' + str(int(atk_pvp_aura[i])) + ';41,' + str(
+            int(def_pvp_aura[i]))
+        s6 = '21,' + str(int(hp_pvp_type_aura[i])) + ';31,' + str(int(atk_pvp_type_aura[i])) + ';41,' + str(
+            int(def_pvp_type_aura[i]))
 
         ws['H' + str(i + 2)] = s1
         ws['I' + str(i + 2)] = s2
@@ -106,6 +139,30 @@ def save_hero_quality_max_value(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_p
         ws['K' + str(i + 2)] = s4
         ws['L' + str(i + 2)] = s5
         ws['M' + str(i + 2)] = s6
+
+        ws['N' + str(i + 2)] = hp_pve[i]
+        ws['O' + str(i + 2)] = atk_pve[i]
+        ws['P' + str(i + 2)] = def_pve[i]
+
+        ws['Q' + str(i + 2)] = hp_pve_aura[i]
+        ws['R' + str(i + 2)] = atk_pve_aura[i]
+        ws['S' + str(i + 2)] = def_pve_aura[i]
+
+        ws['T' + str(i + 2)] = hp_pve_type_aura[i]
+        ws['U' + str(i + 2)] = atk_pve_type_aura[i]
+        ws['V' + str(i + 2)] = def_pve_type_aura[i]
+
+        ws['W' + str(i + 2)] = hp_pvp[i]
+        ws['X' + str(i + 2)] = atk_pvp[i]
+        ws['Y' + str(i + 2)] = def_pvp[i]
+
+        ws['Z' + str(i + 2)] = hp_pvp_aura[i]
+        ws['AA' + str(i + 2)] = atk_pvp_aura[i]
+        ws['AB' + str(i + 2)] = def_pvp_aura[i]
+
+        ws['AC' + str(i + 2)] = hp_pvp_type_aura[i]
+        ws['AD' + str(i + 2)] = atk_pvp_type_aura[i]
+        ws['AE' + str(i + 2)] = def_pvp_type_aura[i]
 
     wb.save(path)
 

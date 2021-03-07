@@ -2,7 +2,7 @@ import pandas as pd
 import save_hero_info as sv
 import calculate_property as cp
 
-hero_list = [8]
+hero_list = [102, 103]
 
 # 属性总值
 HP_STD = 304808
@@ -124,12 +124,12 @@ def cal_property(_levels, _qualities, per=1.0, _key_lv=True):
             _def_base[_levels[j]] = (def_init + _lv_growth_def * _quality_def_per / 10000 +
                                      _quality_def_value + _grade_def_value) * per
         else:
-            _hp_base[_qualities[j]] = (hp_init + _lv_growth_hp * _quality_hp_per / 10000 +
-                                       _quality_hp_value + _grade_hp_value) * per
-            _atk_base[_qualities[j]] = (atk_init + _lv_growth_atk * _quality_atk_per / 10000 +
-                                        _quality_atk_value + _grade_atk_value) * per
-            _def_base[_qualities[j]] = (def_init + _lv_growth_def * _quality_def_per / 10000 +
-                                        _quality_def_value + _grade_def_value) * per
+            _hp_base[_qualities[j] - 1] = (hp_init + _lv_growth_hp * _quality_hp_per / 10000 +
+                                           _quality_hp_value + _grade_hp_value) * per
+            _atk_base[_qualities[j] - 1] = (atk_init + _lv_growth_atk * _quality_atk_per / 10000 +
+                                            _quality_atk_value + _grade_atk_value) * per
+            _def_base[_qualities[j] - 1] = (def_init + _lv_growth_def * _quality_def_per / 10000 +
+                                            _quality_def_value + _grade_def_value) * per
     return _hp_base, _atk_base, _def_base
 
 
@@ -297,7 +297,7 @@ for i in hero_list:
         parry_talent_value.append(df_hero.loc[_id, '_talent_parry'] * int((j + 5) / 10) * 10 * 10000)
         dmg_res_talent_value.append(df_hero.loc[_id, '_talent_dmg_res'] * int((j + 5) / 10) * 10 * 10000)
 
-    sv.save_hero_basic_info(_id, _name, _camp, _profession, _job)
+    sv.save_hero_basic_info(_id, _name, _camp, _profession, _job, hp_init, atk_init, def_init)
     sv.save_hero_quality_growth(_id, hp_quality_per, atk_quality_per, def_quality_per, hp_quality_value,
                                 atk_quality_value, def_quality_value)
     sv.save_hero_grade_growth(_id, hp_grade_value, atk_grade_value, def_grade_value)
@@ -332,16 +332,21 @@ for i in hero_list:
     for j in range(0, 10):
         _hp_3 = hp_base[hero_level_list[j]]
         hp_limiter.append(int(_hp_3 * _hp_2 * LIMITER_PVE_VALUE_PARAM[j]))
+        hp_limiter_per[j] = int(hp_limiter_per[j] * _hp_2)
+
         _atk_3 = atk_base[hero_level_list[j]]
         atk_limiter.append(int(_atk_3 * _atk_2 * LIMITER_PVE_VALUE_PARAM[j]))
+        atk_limiter_per[j] = int(atk_limiter_per[j] * _atk_2)
+
         _def_3 = def_base[hero_level_list[j]]
         def_limiter.append(int(_def_3 * _def_2 * LIMITER_PVE_VALUE_PARAM[j]))
+        def_limiter_per[j] = int(def_limiter_per[j] * _def_2)
 
     # 3. 计算限制器全体光环
-    _hp_2 = df_hero.loc[_id, '_aura_hp']
-    _atk_2 = df_hero.loc[_id, '_aura_atk']
-    _def_2 = df_hero.loc[_id, '_aura_def']
-    _type = get_offset_type(_hp_2, _atk_2, _def_2)
+    _hp_4 = df_hero.loc[_id, '_aura_hp']
+    _atk_4 = df_hero.loc[_id, '_aura_atk']
+    _def_4 = df_hero.loc[_id, '_aura_def']
+    _type = get_offset_type(_hp_4, _atk_4, _def_4)
     df_limiter = pd.read_excel('design/limiter_offset.xlsx', sheet_name=_type, index_col=0, header=0)
 
     hp_limiter_aura = []
@@ -359,24 +364,27 @@ for i in hero_list:
     for j in range(0, 10):
         _hp_3 = hp_base[hero_level_list[j]]
         hp_limiter_aura.append(int(_hp_3 * _hp_2 * LIMITER_PVE_AURA_PARAM[j]))
+        hp_limiter_aura_per[j] = int(hp_limiter_aura_per[j] * _hp_2 * _hp_4)
         _atk_3 = atk_base[hero_level_list[j]]
         atk_limiter_aura.append(int(_atk_3 * _atk_2 * LIMITER_PVE_AURA_PARAM[j]))
+        atk_limiter_aura_per[j] = int(atk_limiter_aura_per[j] * _atk_2 * _atk_4)
         _def_3 = def_base[hero_level_list[j]]
         def_limiter_aura.append(int(_def_3 * _def_2 * LIMITER_PVE_AURA_PARAM[j]))
+        def_limiter_aura_per[j] = int(def_limiter_aura_per[j] * _def_2 * _def_4)
 
     # 3. 计算限制器阵营光环
-    _hp_2 = df_hero.loc[_id, '_type_aura_hp']
-    _atk_2 = df_hero.loc[_id, '_type_aura_atk']
-    _def_2 = df_hero.loc[_id, '_type_aura_def']
-    _type = get_offset_type(_hp_2, _atk_2, _def_2)
+    _hp_4 = df_hero.loc[_id, '_type_aura_hp']
+    _atk_4 = df_hero.loc[_id, '_type_aura_atk']
+    _def_4 = df_hero.loc[_id, '_type_aura_def']
+    _type = get_offset_type(_hp_4, _atk_4, _def_4)
 
     if _type == 'none':
-        hp_limiter_type_aura = []
-        atk_limiter_type_aura = []
-        def_limiter_type_aura = []
-        hp_limiter_type_aura_per = []
-        atk_limiter_type_aura_per = []
-        def_limiter_type_aura_per = []
+        hp_limiter_type_aura = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        atk_limiter_type_aura = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        def_limiter_type_aura = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        hp_limiter_type_aura_per = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        atk_limiter_type_aura_per = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        def_limiter_type_aura_per = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         hp_max_type_aura, atk_max_type_aura, def_max_type_aura = cal_property(_level_list_1, _quality_list_1, 0, False)
     else:
         df_limiter = pd.read_excel('design/limiter_offset.xlsx', sheet_name=_type, index_col=0, header=0)
@@ -396,10 +404,15 @@ for i in hero_list:
         for j in range(0, 10):
             _hp_3 = hp_base[hero_level_list[j]]
             hp_limiter_type_aura.append(int(_hp_3 * _hp_2 * LIMITER_PVE_TYPE_AURA_PARAM[j]))
+            hp_limiter_type_aura_per[j] = int(hp_limiter_type_aura_per[j] * _hp_2 * _hp_4)
+
             _atk_3 = atk_base[hero_level_list[j]]
             atk_limiter_type_aura.append(int(_atk_3 * _atk_2 * LIMITER_PVE_TYPE_AURA_PARAM[j]))
+            atk_limiter_type_aura_per[j] = int(atk_limiter_type_aura_per[j] * _atk_2 * _atk_4)
+
             _def_3 = def_base[hero_level_list[j]]
             def_limiter_type_aura.append(int(_def_3 * _def_2 * LIMITER_PVE_TYPE_AURA_PARAM[j]))
+            def_limiter_type_aura_per[j] = int(def_limiter_type_aura_per[j] * _def_2 * _def_4)
 
     # 计算限制器PVP属性及光环
     # 1. 计算标准等级基础属性
@@ -438,10 +451,15 @@ for i in hero_list:
     for j in range(0, 10):
         _hp_3 = hp_base_pvp[hero_level_list_pvp[j]]
         hp_limiter_pvp.append(int(_hp_3 * _hp_2 * LIMITER_PVP_VALUE_PARAM[j]))
+        hp_limiter_per_pvp[j] = int(hp_limiter_per_pvp[j] * _hp_2)
+
         _atk_3 = atk_base_pvp[hero_level_list_pvp[j]]
         atk_limiter_pvp.append(int(_atk_3 * _atk_2 * LIMITER_PVP_VALUE_PARAM[j]))
+        atk_limiter_per_pvp[j] = int(atk_limiter_per_pvp[j] * _atk_2)
+
         _def_3 = def_base_pvp[hero_level_list_pvp[j]]
         def_limiter_pvp.append(int(_def_3 * _def_2 * LIMITER_PVP_VALUE_PARAM[j]))
+        def_limiter_per_pvp[j] = int(def_limiter_per_pvp[j] * _def_2)
 
     # 3. 计算限制器全体光环
     hp_limiter_aura_pvp = []
@@ -453,10 +471,11 @@ for i in hero_list:
     hp_max_aura_pvp, atk_max_aura_pvp, def_max_aura_pvp = cal_property(_level_list_1_pvp, _quality_list_1_pvp,
                                                                        hp_limiter_aura_per_pvp[9] / 10000, False)
 
-    _hp_2 = df_hero.loc[_id, '_aura_hp']
-    _atk_2 = df_hero.loc[_id, '_aura_atk']
-    _def_2 = df_hero.loc[_id, '_aura_def']
-    _type = get_offset_type(_hp_2, _atk_2, _def_2)
+    _hp_4 = df_hero.loc[_id, '_aura_hp']
+    _atk_4 = df_hero.loc[_id, '_aura_atk']
+    _def_4 = df_hero.loc[_id, '_aura_def']
+    _type = get_offset_type(_hp_4, _atk_4, _def_4)
+
     df_limiter = pd.read_excel('design/limiter_offset.xlsx', sheet_name=_type, index_col=0, header=0)
     _hp_2 = df_limiter.loc[v, '_hp']
     _atk_2 = df_limiter.loc[v, '_atk']
@@ -464,24 +483,29 @@ for i in hero_list:
     for j in range(0, 10):
         _hp_3 = hp_base_pvp[hero_level_list_pvp[j]]
         hp_limiter_aura_pvp.append(int(_hp_3 * _hp_2 * LIMITER_PVP_AURA_PARAM[j]))
+        hp_limiter_aura_per_pvp[j] = int(hp_limiter_aura_per_pvp[j] * _hp_2 * _hp_4)
+
         _atk_3 = atk_base_pvp[hero_level_list_pvp[j]]
         atk_limiter_aura_pvp.append(int(_atk_3 * _atk_2 * LIMITER_PVP_AURA_PARAM[j]))
+        atk_limiter_aura_per_pvp[j] = int(atk_limiter_aura_per_pvp[j] * _atk_2 * _atk_4)
+
         _def_3 = def_base_pvp[hero_level_list_pvp[j]]
         def_limiter_aura_pvp.append(int(_def_3 * _def_2 * LIMITER_PVP_AURA_PARAM[j]))
+        def_limiter_aura_per_pvp[j] = int(def_limiter_aura_per_pvp[j] * _def_2 * _def_4)
 
     # 3. 计算限制器阵营光环
-    _hp_2 = df_hero.loc[_id, '_type_aura_hp']
-    _atk_2 = df_hero.loc[_id, '_type_aura_atk']
-    _def_2 = df_hero.loc[_id, '_type_aura_def']
-    _type = get_offset_type(_hp_2, _atk_2, _def_2)
+    _hp_4 = df_hero.loc[_id, '_type_aura_hp']
+    _atk_4 = df_hero.loc[_id, '_type_aura_atk']
+    _def_4 = df_hero.loc[_id, '_type_aura_def']
+    _type = get_offset_type(_hp_4, _atk_4, _def_4)
 
     if _type == 'none':
-        hp_limiter_type_aura_pvp = []
-        atk_limiter_type_aura_pvp = []
-        def_limiter_type_aura_pvp = []
-        hp_limiter_type_aura_per_pvp = []
-        atk_limiter_type_aura_per_pvp = []
-        def_limiter_type_aura_per_pvp = []
+        hp_limiter_type_aura_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        atk_limiter_type_aura_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        def_limiter_type_aura_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        hp_limiter_type_aura_per_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        atk_limiter_type_aura_per_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        def_limiter_type_aura_per_pvp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         hp_max_type_aura_pvp, atk_max_type_aura_pvp, def_max_type_aura_pvp = cal_property(_level_list_1_pvp,
                                                                                           _quality_list_1_pvp, 0, False)
     else:
@@ -503,10 +527,15 @@ for i in hero_list:
         for j in range(0, 10):
             _hp_3 = hp_base_pvp[hero_level_list_pvp[j]]
             hp_limiter_type_aura_pvp.append(int(_hp_3 * _hp_2 * LIMITER_PVP_TYPE_AURA_PARAM[j]))
+            hp_limiter_type_aura_per_pvp[j] = int(hp_limiter_type_aura_per_pvp[j] * _hp_2 * _hp_4)
+
             _atk_3 = atk_base_pvp[hero_level_list_pvp[j]]
             atk_limiter_type_aura_pvp.append(int(_atk_3 * _atk_2 * LIMITER_PVP_TYPE_AURA_PARAM[j]))
+            atk_limiter_type_aura_per_pvp[j] = int(atk_limiter_type_aura_per_pvp[j] * _atk_2 * _atk_4)
+
             _def_3 = def_base_pvp[hero_level_list_pvp[j]]
             def_limiter_type_aura_pvp.append(int(_def_3 * _def_2 * LIMITER_PVP_TYPE_AURA_PARAM[j]))
+            def_limiter_type_aura_per_pvp[j] = int(def_limiter_type_aura_per_pvp[j] * _def_2 * _def_4)
 
     sv.save_hero_limiter_growth(_id, hp_limiter, hp_limiter_per, hp_limiter_aura, hp_limiter_aura_per,
                                 hp_limiter_type_aura, hp_limiter_type_aura_per, hp_limiter_pvp, hp_limiter_per_pvp,
