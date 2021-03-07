@@ -99,6 +99,7 @@ for _id in hero_list:
             _level = get_pvp_level(_level)
             _lv_enhance = 0
         _real_lv = get_real_level(_level, _lv_enhance)
+        _grade = get_grade(_level)
 
         _e_qua = df_status.loc[i, '_e_qua']
         _e_enhance = df_status.loc[i, '_e_enhance']
@@ -110,11 +111,11 @@ for _id in hero_list:
 
         # 基础属性
         _hp_base = hp_init + df_level_growth.loc[
-            _real_lv, '_hp_inc'] * hp_per_quality / 10000 + hp_v_quality + hp_v_grade
+            _real_lv, '_hp_inc'] * hp_per_quality[_quality] / 10000 + hp_v_quality[_quality] + hp_v_grade[_grade]
         _atk_base = atk_init + df_level_growth.loc[
-            _real_lv, '_atk_inc'] * atk_per_quality / 10000 + atk_v_quality + atk_v_grade
+            _real_lv, '_atk_inc'] * atk_per_quality[_quality] / 10000 + atk_v_quality[_quality] + atk_v_grade[_grade]
         _def_base = def_init + df_level_growth.loc[
-            _real_lv, '_def_inc'] * def_per_quality / 10000 + def_v_quality + def_v_grade
+            _real_lv, '_def_inc'] * def_per_quality[_quality] / 10000 + def_v_quality[_quality] + def_v_grade[_grade]
 
         # 装备属性
         _equip_1 = hero_profession * 1000 + 10 + 100
@@ -150,19 +151,19 @@ for _id in hero_list:
         _dmg_res_talent = dmg_res_talent[_talent]
 
         # 研究所核心属性
-        _hp_academy = df_academy.loc[_core,'_hp_' + _type]
+        _hp_academy = df_academy.loc[_core, '_hp_' + _type]
         _atk_academy = df_academy.loc[_core, '_atk_' + _type]
         _def_academy = df_academy.loc[_core, '_def_' + _type]
 
         # 职阶属性
-        _hp_job = df_job.loc[_job, '_hp' + _type]
-        _atk_job = df_job.loc[_job, '_atk' + _type]
-        _def_job = df_job.loc[_job, '_def' + _type]
-        _crit_job = df_job.loc[_job, '_crit' + _type]
-        _crit_res_job = df_job.loc[_job, '_crit_res' + _type]
-        _precise_job = df_job.loc[_job, '_precise' + _type]
-        _parry_job = df_job.loc[_job, '_parry' + _type]
-        _dmg_res_job = df_job.loc[_job, '_dmg_res' + _type]
+        _hp_job = df_job.loc[_job, '_hp_' + _type]
+        _atk_job = df_job.loc[_job, '_atk_' + _type]
+        _def_job = df_job.loc[_job, '_def_' + _type]
+        _crit_job = df_job.loc[_job, '_crit_' + _type]
+        _crit_res_job = df_job.loc[_job, '_crit_res_' + _type]
+        _precise_job = df_job.loc[_job, '_precise_' + _type]
+        _parry_job = df_job.loc[_job, '_parry_' + _type]
+        _dmg_res_job = df_job.loc[_job, '_dmg_res_' + _type]
 
         # 机械核心属性
         if _type == 'pve':
@@ -177,6 +178,8 @@ for _id in hero_list:
         # 限制器属性 1为固定值 2为百分比 3为光环固定值 4为光环百分比 5为阵营光环固定值 6为阵营光环百分比
         #          12、14、16为百分比转固定值
         #          11、13、15为百分比+固定值
+        # todo 处理限制器等级为0或不开放的情况
+        _limiter -= 1
         if _type == 'pve':
             hp1 = hp_pve_v_limiter[_limiter]
             atk1 = atk_pve_v_limiter[_limiter]
@@ -296,6 +299,8 @@ for _id in hero_list:
         _parry = _parry_equip + _parry_talent + _parry_job
         _dmg_res = _dmg_res_equip + _dmg_res_talent + _dmg_res_job
 
+        # todo 存储限制器光环属性
+
         final_hp.append(_hp)
         final_atk.append(_atk)
         final_def.append(_def)
@@ -306,5 +311,6 @@ for _id in hero_list:
         final_parry.append(_parry)
         final_dmg_res.append(_dmg_res)
 
-
+    sv.save_hero_status(_id, df_status, final_hp, final_atk, final_def, final_crit, final_crit_res, final_crit_dmg,
+                        final_precise, final_parry, final_dmg_res)
 print(_id)
