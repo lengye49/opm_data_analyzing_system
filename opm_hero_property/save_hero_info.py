@@ -122,6 +122,7 @@ def save_hero_quality_max_value(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_p
     ws['AE1'] = 'PVP阵营光环最大值'
 
     for i in range(0, 16):
+        print(i)
         s1 = '21,' + str(int(hp_pve[i])) + ';31,' + str(int(atk_pve[i])) + ';41,' + str(int(def_pve[i]))
         s2 = '21,' + str(int(hp_pve_aura[i])) + ';31,' + str(int(atk_pve_aura[i])) + ';41,' + str(
             int(def_pve_aura[i]))
@@ -389,7 +390,85 @@ def save_hero_limiter_growth(hero_id, hp_pve_v, hp_pve_per, hp_pve_aura, hp_pve_
     wb.save(path)
 
 
-def save_hero_status(hero_id, df, hp, atk, de, crit, crit_res, crit_dmg, precise, parry, dmg_res):
+def get_skills(_level, _talent, _job, _limiter):
+    s = ''
+    if _level > 220:
+        s = '5,3,3,3'
+    elif _level > 200:
+        s = '4,3,3,3'
+    elif _level > 180:
+        s = '4,3,3,2'
+    elif _level > 160:
+        s = '4,3,2,2'
+    elif _level > 140:
+        s = '4,2,2,2'
+    elif _level > 120:
+        s = '3,2,2,2'
+    elif _level > 100:
+        s = '3,2,2,1'
+    elif _level > 80:
+        s = '3,2,1,1'
+    elif _level > 60:
+        s = '3,1,1,1'
+    elif _level > 40:
+        s = '2,1,1,1'
+    elif _level > 20:
+        s = '2,1,1,0'
+    elif _level > 10:
+        s = '1,1,1,0'
+    else:
+        s = '1,1,0,0'
+
+    if _talent > 29:
+        s += ',4'
+    elif _talent > 19:
+        s += ',3'
+    elif _talent > 9:
+        s += ',2'
+    elif _talent >= 0:
+        s += ',1'
+    else:
+        s += ',0'
+
+    if _job > 74:
+        s += ',5,5,5'
+    elif _job > 69:
+        s += ',5,5,4'
+    elif _job > 64:
+        s += ',5,4,4'
+    elif _job > 59:
+        s += ',4,4,4'
+    elif _job > 54:
+        s += ',4,4,3'
+    elif _job > 49:
+        s += ',4,3,3'
+    elif _job > 44:
+        s += ',3,3,3'
+    elif _job > 39:
+        s += ',3,3,2'
+    elif _job > 34:
+        s += ',3,2,2'
+    elif _job > 29:
+        s += ',2,2,2'
+    elif _job > 24:
+        s += ',2,2,1'
+    elif _job > 19:
+        s += ',2,2,0'
+    elif _job > 14:
+        s += ',2,1,0'
+    elif _job > 9:
+        s += ',2,0,0'
+    elif _job > 4:
+        s += ',1,0,0'
+    else:
+        s += ',0,0,0'
+
+    s += ',' + str(_limiter)
+    return s
+
+
+def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg, precise, parry, dmg_res, aura,
+                     type_aura):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'status')
 
@@ -405,20 +484,38 @@ def save_hero_status(hero_id, df, hp, atk, de, crit, crit_res, crit_dmg, precise
     ws['J1'] = '限制器'
     ws['K1'] = '机械核心'
 
-    ws['L1'] = 'hp'
-    ws['M1'] = 'atk'
-    ws['N1'] = 'def'
-    ws['O1'] = 'crit'
-    ws['P1'] = 'crit_res'
-    ws['Q1'] = 'crit_dmg'
-    ws['R1'] = 'precise'
-    ws['S1'] = 'parry'
-    ws['T1'] = 'dmg_res'
+    ws['L1'] = 'HeroId'
+    ws['M1'] = 'Type'
+    ws['N1'] = 'Quality'
+    ws['O1'] = 'Level'
+    ws['P1'] = 'EnhancePeriod'
+    ws['Q1'] = 'Equips'
+    ws['R1'] = 'TalentLevel'
+    ws['S1'] = 'Skills'
 
+    ws['T1'] = 'hp'
+    ws['U1'] = 'atk'
+    ws['V1'] = 'def'
+    ws['W1'] = 'crit'
+    ws['X1'] = 'crit_res'
+    ws['Y1'] = 'crit_dmg'
+    ws['Z1'] = 'precise'
+    ws['AA1'] = 'parry'
+    ws['AB1'] = 'dmg_res'
+    ws['AC1'] = 'fury'
 
-    l = df.index.values
-    for i in len(l):
-        k = l[i]
+    ws['AD1'] = 'show_level'
+    ws['AE1'] = 'chase'
+    ws['AF1'] = 'academy'
+    ws['AG1'] = 'job'
+    ws['AH1'] = 'limiter'
+    ws['AI1'] = 'mechanical'
+    ws['AJ1'] = 'aura'
+    ws['AK1'] = 'type_aura'
+
+    ll = df.index.values
+    for i in range(0, len(ll)):
+        k = ll[i]
         ws['A' + str(i + 2)] = df.loc[k, '_type']
         ws['B' + str(i + 2)] = df.loc[k, '_quality']
         ws['C' + str(i + 2)] = df.loc[k, '_pve_level']
@@ -431,14 +528,33 @@ def save_hero_status(hero_id, df, hp, atk, de, crit, crit_res, crit_dmg, precise
         ws['J' + str(i + 2)] = df.loc[k, '_limiter']
         ws['K' + str(i + 2)] = df.loc[k, '_mechanical']
 
-        ws['L' + str(i + 2)] = hp[i]
-        ws['M' + str(i + 2)] = atk[i]
-        ws['N' + str(i + 2)] = de[i]
-        ws['O' + str(i + 2)] = crit[i]
-        ws['P' + str(i + 2)] = crit_res[i]
-        ws['Q' + str(i + 2)] = crit_dmg[i]
-        ws['R' + str(i + 2)] = precise[i]
-        ws['S' + str(i + 2)] = parry[i]
-        ws['T' + str(i + 2)] = dmg_res[i]
+        ws['L' + str(i + 2)] = hero_id
+        ws['M' + str(i + 2)] = 2
+        ws['N' + str(i + 2)] = df.loc[k, '_quality']
+        ws['O' + str(i + 2)] = levels[i]
+        ws['P' + str(i + 2)] = 0
+        ws['Q' + str(i + 2)] = ''
+        ws['R' + str(i + 2)] = df.loc[k, '_talent']
+        ws['S' + str(i + 2)] = get_skills(levels[i], df.loc[k, '_talent'], df.loc[k, '_job'], df.loc[k, '_limiter'])
+
+        ws['T' + str(i + 2)] = hp[i]
+        ws['U' + str(i + 2)] = atk[i]
+        ws['V' + str(i + 2)] = de[i]
+        ws['W' + str(i + 2)] = crit[i]
+        ws['X' + str(i + 2)] = crit_res[i]
+        ws['Y' + str(i + 2)] = crit_dmg[i]
+        ws['Z' + str(i + 2)] = precise[i]
+        ws['AA' + str(i + 2)] = parry[i]
+        ws['AB' + str(i + 2)] = dmg_res[i]
+        ws['AC' + str(i + 2)] = 0
+
+        ws['AD' + str(i + 2)] = levels[i]
+        ws['AE' + str(i + 2)] = 5000
+        ws['AF' + str(i + 2)] = df.loc[k, '_core']
+        ws['AG' + str(i + 2)] = df.loc[k, '_job']
+        ws['AH' + str(i + 2)] = df.loc[k, '_limiter']
+        ws['AI' + str(i + 2)] = df.loc[k, '_mechanical']
+        ws['AJ' + str(i + 2)] = aura[i]
+        ws['AK' + str(i + 2)] = type_aura[i]
 
     wb.save(path)

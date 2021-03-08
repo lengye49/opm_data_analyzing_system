@@ -273,7 +273,7 @@ for _id in hero_list:
         atk6.append(_atk)
         def6.append(_def)
 
-    sv.save_hero_quality_growth(_id, hp_quality_per, atk_quality_per, atk_quality_per,
+    sv.save_hero_quality_growth(_id, hp_quality_per, atk_quality_per, def_quality_per,
                                 hp_quality_value, atk_quality_value, def_quality_value)
     sv.save_hero_quality_max_value(_id, hp1, atk1, def1, hp4, atk4, def4, hp2, atk2, def2, hp5, atk5, def5,
                                    hp3, atk3, def3, hp6, atk6, def6)
