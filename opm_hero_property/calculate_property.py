@@ -1,9 +1,28 @@
+"""
+这个脚本用于计算指定hero_list的角色属性，并将得到的属性以Bot表的格式存储到对应英雄数据的status页中
+数据来源是 hero_design表里的hero_status页
+
+其中装备类型加成采用了特殊设定（类型为10且强化等级>0才有加成）
+"""
+
 import pandas as pd
 import load_hero_info as ld
 import save_hero_info as sv
 
+# 英雄列表
+# hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
+#               43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
+#               101, 102, 103]
+
+hero_list = [2]
+
 
 def get_grade(level):
+    """
+    根据英雄等级计算品阶
+    :param level:
+    :return:
+    """
     if level <= 10:
         return 1
     else:
@@ -11,6 +30,12 @@ def get_grade(level):
 
 
 def get_real_level(level, enhance):
+    """
+    根据展示等级和强化等级计算实际等级
+    :param level:
+    :param enhance:
+    :return:
+    """
     if level < 240:
         return level
     else:
@@ -18,23 +43,21 @@ def get_real_level(level, enhance):
 
 
 def get_pvp_level(_l):
+    """
+    计算角色的竞技等级
+    :param _l:
+    :return:
+    """
     return 240 + int(_l / 10)
 
 
-# hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
-# #              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
-# #              101, 102, 103]
-
-hero_list = [8, 21, 27, 36, 63, 84, 102, 103]
-# hero_list = []
-
+# 读取设定表
 df_status = pd.read_excel('design/hero_design.xlsx', sheet_name='设定状态', index_col=0, header=0)
 df_status.dropna(axis=0, how='all')
 status_list = df_status.index.values
-
 df_hero_info = pd.read_excel('design/hero_design.xlsx', sheet_name='卡牌设定', index_col=0, header=0)
 
-# 提前加载的信息
+# 提前读取通用配置
 # 研究所机械核心
 df_academy = pd.read_excel('design/academy.xlsx', index_col=0, header=0)
 # 等级成长
@@ -42,11 +65,12 @@ df_level_growth = pd.read_excel('design/level_growth.xlsx', index_col=0, header=
 # 装备信息
 df_equip = pd.read_excel('design/equip_design.xlsx', index_col=0, header=0)
 
+# 正式数据处理
 for _id in hero_list:
+
     # 加载基础信息
     hero_id, hero_name, hero_camp, hero_profession, hero_job, hp_init, atk_init, def_init, crit_init \
         = ld.load_hero_basic_info(_id)
-
     print('正在处理角色: ' + str(_id) + ' ' + hero_name)
 
     # 加载品质信息
@@ -89,7 +113,7 @@ for _id in hero_list:
     # 加载职阶信息
     df_job = pd.read_excel('design/job_' + str(hero_job) + '.xlsx', index_col=0)
 
-    # 计算各个状态的属性
+    # 计算属性
     final_hp = []
     final_atk = []
     final_def = []
@@ -104,9 +128,12 @@ for _id in hero_list:
 
     _level_list = []
 
+    # 遍历各个状态
     for i in status_list:
         _type = df_status.loc[i, '_type']
-        _quality = df_status.loc[i, '_quality'] -1
+
+        # 品质-1作为参数使用
+        _quality = df_status.loc[i, '_quality'] - 1
 
         _level = df_status.loc[i, '_pve_level']
         _lv_enhance = df_status.loc[i, '_lv_enhance']
@@ -114,6 +141,8 @@ for _id in hero_list:
             _level = get_pvp_level(_level)
             _lv_enhance = 0
         _real_lv = get_real_level(_level, _lv_enhance)
+
+        # 品阶-1作为参数使用
         _grade = get_grade(_level) - 1
 
         _e_qua = df_status.loc[i, '_e_qua']
@@ -138,12 +167,12 @@ for _id in hero_list:
         _equip_3 = hero_profession * 1000 + _e_qua + 300
         _equip_4 = hero_profession * 1000 + _e_qua + 400
 
-        if (_e_enhance>0) and (_e_qua == 10):
-            _adder = 1.0 + _e_enhance/10.0 + 0.3
-        elif _e_enhance>0:
-            _adder = 1.0 + _e_enhance/10.0
+        if (_e_enhance > 0) and (_e_qua == 10):
+            _adder = 1.0 + _e_enhance / 10.0 + 0.3
+        elif _e_enhance > 0:
+            _adder = 1.0 + _e_enhance / 10.0
         else:
-            _adder =1.0
+            _adder = 1.0
         _hp_equip = (df_equip.loc[_equip_1, '_hp'] + df_equip.loc[_equip_2, '_hp'] + df_equip.loc[_equip_3, '_hp'] +
                      df_equip.loc[_equip_4, '_hp']) * _adder
         _atk_equip = (df_equip.loc[_equip_1, '_atk'] + df_equip.loc[_equip_2, '_atk'] + df_equip.loc[_equip_3, '_atk'] +
@@ -162,7 +191,7 @@ for _id in hero_list:
             _equip_3, '_dmg_res'] + df_equip.loc[_equip_4, '_dmg_res']) * _adder
 
         # 天赋属性
-        if _talent >=0:
+        if _talent >= 0:
             _hp_talent = _hp_base * hp_per_talent[_talent] / 10000
             _atk_talent = _atk_base * atk_per_talent[_talent] / 10000
             _def_talent = _def_base * def_per_talent[_talent] / 10000
@@ -213,7 +242,10 @@ for _id in hero_list:
 
         # 机械核心属性
         if _mechanical > 0:
+
+            # 机械核心等级-1作为参数使用
             _mechanical -= 1
+
             if _type == 'pve':
                 _hp_mechanical = hp_pve_mechanical[_mechanical]
                 _atk_mechanical = atk_pve_mechanical[_mechanical]
@@ -232,7 +264,10 @@ for _id in hero_list:
         #          11、13、15为百分比+固定值
         _limiter_on = (df_hero_info.loc[_id, '_limiter_on'] == 1)
         if _limiter_on and _limiter > 0:
+
+            # 限制器等级-1作为参数使用
             _limiter -= 1
+
             if _type == 'pve':
                 hp1 = hp_pve_v_limiter[_limiter]
                 atk1 = atk_pve_v_limiter[_limiter]
@@ -390,4 +425,3 @@ for _id in hero_list:
 
     sv.save_hero_status(_id, _level_list, df_status, final_hp, final_atk, final_def, final_crit, final_crit_res,
                         final_crit_dmg, final_precise, final_parry, final_dmg_res, final_aura, final_type_aura)
-

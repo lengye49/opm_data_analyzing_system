@@ -1,6 +1,5 @@
 import pandas as pd
 import save_hero_info as sv
-import calculate_property as cp
 
 hero_list = [102, 103]
 

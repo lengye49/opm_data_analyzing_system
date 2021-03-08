@@ -1,3 +1,8 @@
+"""
+一次性脚本
+用于将各个英雄的信息从spec中导入本文件系统
+"""
+
 import save_hero_info as sv
 import pandas as pd
 import os
@@ -144,16 +149,12 @@ def get_split_talent_value(s):
     return a, b, c, d, e, f, g, h
 
 
-path = ''
 path = set_version_path()
 df_hero_info = pd.read_excel('design/hero_design.xlsx', index_col=0, header=0)
 
 hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
              101, 102, 103]
-
-# hero_list = [ 92, 93, 94, 95, 96, 97, 98, 100,
-#              101, 102, 103]
 
 for _id in hero_list:
 
@@ -326,7 +327,6 @@ for _id in hero_list:
     sv.save_hero_mechanical_power(_id, hp_me_pve, atk_me_pve, def_me_pve, hp_me_pvp, atk_me_pvp, def_me_pvp)
 
     # 加载限制器信息
-
     df_limiter = read_spec_file('HeroLimiter')
     hp_pve_v = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     hp_pve_per = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

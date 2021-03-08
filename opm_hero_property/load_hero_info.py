@@ -1,3 +1,11 @@
+"""
+这个脚本用于从单个英雄信息表中读取指定信息
+这个脚本跟save_hero_info.py 脚本对应使用
+
+英雄信息表应该以英雄的id作为文件名
+每个Sheet页命名有固定要求
+"""
+
 import openpyxl
 import os
 
@@ -8,6 +16,7 @@ HERO_ROLE = ['无畏', '敏捷', '战术']
 HERO_JOB = ['重装', '近卫', '支援', '特种', '火力压制']
 
 
+# 获取对应路径的Excel文件
 def get_wb(hero_id):
     global path
     path = 'heroes/' + str(hero_id) + '.xlsx'
@@ -17,6 +26,7 @@ def get_wb(hero_id):
         print('找不到英雄' + str(hero_id) + '的excel文件！')
 
 
+# 获取Sheet页
 def get_ws(wb, _name):
     if _name in wb.sheetnames:
         return wb[_name]
