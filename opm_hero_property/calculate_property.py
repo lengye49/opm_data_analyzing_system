@@ -25,7 +25,8 @@ def get_pvp_level(_l):
 # #              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
 # #              101, 102, 103]
 
-hero_list = [102, 103]
+hero_list = [8, 21, 27, 36, 63, 84, 102, 103]
+# hero_list = []
 
 df_status = pd.read_excel('design/hero_design.xlsx', sheet_name='设定状态', index_col=0, header=0)
 df_status.dropna(axis=0, how='all')
@@ -132,12 +133,17 @@ for _id in hero_list:
             _real_lv, '_def_inc'] * def_per_quality[_quality] / 10000 + def_v_quality[_quality] + def_v_grade[_grade]
 
         # 装备属性
-        _equip_1 = hero_profession * 1000 + 10 + 100
-        _equip_2 = hero_profession * 1000 + 10 + 200
-        _equip_3 = hero_profession * 1000 + 10 + 300
-        _equip_4 = hero_profession * 1000 + 10 + 400
+        _equip_1 = hero_profession * 1000 + _e_qua + 100
+        _equip_2 = hero_profession * 1000 + _e_qua + 200
+        _equip_3 = hero_profession * 1000 + _e_qua + 300
+        _equip_4 = hero_profession * 1000 + _e_qua + 400
 
-        _adder = (1.0 + _e_enhance/10.0 + 0.3) if _e_enhance>0 else 1.0
+        if (_e_enhance>0) and (_e_qua == 10):
+            _adder = 1.0 + _e_enhance/10.0 + 0.3
+        elif _e_enhance>0:
+            _adder = 1.0 + _e_enhance/10.0
+        else:
+            _adder =1.0
         _hp_equip = (df_equip.loc[_equip_1, '_hp'] + df_equip.loc[_equip_2, '_hp'] + df_equip.loc[_equip_3, '_hp'] +
                      df_equip.loc[_equip_4, '_hp']) * _adder
         _atk_equip = (df_equip.loc[_equip_1, '_atk'] + df_equip.loc[_equip_2, '_atk'] + df_equip.loc[_equip_3, '_atk'] +
@@ -156,14 +162,24 @@ for _id in hero_list:
             _equip_3, '_dmg_res'] + df_equip.loc[_equip_4, '_dmg_res']) * _adder
 
         # 天赋属性
-        _hp_talent = _hp_base * hp_per_talent[_talent] / 10000
-        _atk_talent = _atk_base * atk_per_talent[_talent] / 10000
-        _def_talent = _def_base * def_per_talent[_talent] / 10000
-        _crit_talent = crit_talent[_talent]
-        _crit_res_talent = crit_res_talent[_talent]
-        _precise_talent = precise_talent[_talent]
-        _parry_talent = parry_talent[_talent]
-        _dmg_res_talent = dmg_res_talent[_talent]
+        if _talent >=0:
+            _hp_talent = _hp_base * hp_per_talent[_talent] / 10000
+            _atk_talent = _atk_base * atk_per_talent[_talent] / 10000
+            _def_talent = _def_base * def_per_talent[_talent] / 10000
+            _crit_talent = crit_talent[_talent]
+            _crit_res_talent = crit_res_talent[_talent]
+            _precise_talent = precise_talent[_talent]
+            _parry_talent = parry_talent[_talent]
+            _dmg_res_talent = dmg_res_talent[_talent]
+        else:
+            _hp_talent = 0
+            _atk_talent = 0
+            _def_talent = 0
+            _crit_talent = 0
+            _crit_res_talent = 0
+            _precise_talent = 0
+            _parry_talent = 0
+            _dmg_res_talent = 0
 
         # 研究所核心属性
         if _core == 0:
@@ -249,7 +265,7 @@ for _id in hero_list:
                 hp13 = hp3 + hp14
                 atk13 = atk3 + atk14
                 def13 = def3 + def14
-                s1 = '21,' + str(hp13) + ';31,' + str(atk13) + ';41,' + str(def13)
+                s1 = '21,' + str(int(hp13)) + ';31,' + str(int(atk13)) + ';41,' + str(int(def13))
 
                 hp5 = hp_pve_type_aura_limiter[_limiter]
                 atk5 = atk_pve_type_aura_limiter[_limiter]
@@ -266,7 +282,7 @@ for _id in hero_list:
                 hp15 = hp5 + hp16
                 atk15 = atk5 + atk16
                 def15 = def5 + def16
-                s2 = '21,' + str(hp15) + ';31,' + str(atk15) + ';41,' + str(def15)
+                s2 = '21,' + str(int(hp15)) + ';31,' + str(int(atk15)) + ';41,' + str(int(def15))
             else:
                 hp1 = hp_pvp_v_limiter[_limiter]
                 atk1 = atk_pvp_v_limiter[_limiter]
@@ -299,7 +315,7 @@ for _id in hero_list:
                 hp13 = hp3 + hp14
                 atk13 = atk3 + atk14
                 def13 = def3 + def14
-                s1 = '21,' + str(hp13) + ';31,' + str(atk13) + ';41,' + str(def13)
+                s1 = '21,' + str(int(hp13)) + ';31,' + str(int(atk13)) + ';41,' + str(int(def13))
 
                 hp5 = hp_pvp_type_aura_limiter[_limiter]
                 atk5 = atk_pvp_type_aura_limiter[_limiter]
@@ -316,7 +332,7 @@ for _id in hero_list:
                 hp15 = hp5 + hp16
                 atk15 = atk5 + atk16
                 def15 = def5 + def16
-                s2 = '21,' + str(hp15) + ';31,' + str(atk15) + ';41,' + str(def15)
+                s2 = '21,' + str(int(hp15)) + ';31,' + str(int(atk15)) + ';41,' + str(int(def15))
 
             _hp_limiter = hp11
             _hp_limiter_aura = hp13
