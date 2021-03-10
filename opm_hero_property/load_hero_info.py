@@ -283,3 +283,19 @@ def load_hero_limiter(hero_id):
            def_pve_per,def_pve_aura, def_pve_aura_per, def_pve_type_aura, def_pve_type_aura_per,\
            def_pvp_v,def_pvp_per, def_pvp_aura, def_pvp_aura_per, def_pvp_type_aura, def_pvp_type_aura_per
 
+
+def load_hero_power(hero_id, i):
+    wb = get_wb(hero_id)
+    ws = get_ws(wb, 'status')
+
+    _p_base = ws['AL' + str(i + 2)]
+    _p_equip = ws['AM' + str(i + 2)]
+    _p_talent = ws['AN' + str(i + 2)]
+    _p_academy = ws['AO' + str(i + 2)]
+    _p_job = ws['AP' + str(i + 2)]
+    _p_mechanical = ws['AQ' + str(i + 2)]
+    _p_limiter = ws['AR' + str(i + 2)]
+    _p_total = ws['AS' + str(i + 2)]
+
+    return _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter, _p_total
+

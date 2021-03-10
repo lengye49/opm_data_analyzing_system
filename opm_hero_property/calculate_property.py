@@ -8,47 +8,14 @@
 import pandas as pd
 import load_hero_info as ld
 import save_hero_info as sv
+import opm_property_tools as tools
 
 # 英雄列表
-# hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
-#               43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
-#               101, 102, 103]
+hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
+             43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
+             101, 102, 103]
 
-hero_list = [2]
-
-
-def get_grade(level):
-    """
-    根据英雄等级计算品阶
-    :param level:
-    :return:
-    """
-    if level <= 10:
-        return 1
-    else:
-        return min(19, int((level - 1) / 20) + 2)
-
-
-def get_real_level(level, enhance):
-    """
-    根据展示等级和强化等级计算实际等级
-    :param level:
-    :param enhance:
-    :return:
-    """
-    if level < 240:
-        return level
-    else:
-        return (level - 240) * 10 + 240 + enhance
-
-
-def get_pvp_level(_l):
-    """
-    计算角色的竞技等级
-    :param _l:
-    :return:
-    """
-    return 240 + int(_l / 10)
+# hero_list = [2]
 
 
 # 读取设定表
@@ -126,6 +93,15 @@ for _id in hero_list:
     final_aura = []
     final_type_aura = []
 
+    power_base = []
+    power_equip = []
+    power_talent = []
+    power_academy = []
+    power_job = []
+    power_mechanical = []
+    power_limiter = []
+    power_total = []
+
     _level_list = []
 
     # 遍历各个状态
@@ -138,12 +114,12 @@ for _id in hero_list:
         _level = df_status.loc[i, '_pve_level']
         _lv_enhance = df_status.loc[i, '_lv_enhance']
         if _type == 'pvp':
-            _level = get_pvp_level(_level)
+            _level = tools.get_pvp_level(_level)
             _lv_enhance = 0
-        _real_lv = get_real_level(_level, _lv_enhance)
+        _real_lv = tools.get_real_level(_level, _lv_enhance)
 
         # 品阶-1作为参数使用
-        _grade = get_grade(_level) - 1
+        _grade = tools.get_grade(_level) - 1
 
         _e_qua = df_status.loc[i, '_e_qua']
         _e_enhance = df_status.loc[i, '_e_enhance']
@@ -160,6 +136,7 @@ for _id in hero_list:
             _real_lv, '_atk_inc'] * atk_per_quality[_quality] / 10000 + atk_v_quality[_quality] + atk_v_grade[_grade]
         _def_base = def_init + df_level_growth.loc[
             _real_lv, '_def_inc'] * def_per_quality[_quality] / 10000 + def_v_quality[_quality] + def_v_grade[_grade]
+        _power_base = tools.get_power(_hp_base, _atk_base, _def_base, crit_init)
 
         # 装备属性
         _equip_1 = hero_profession * 1000 + _e_qua + 100
@@ -190,6 +167,9 @@ for _id in hero_list:
         _dmg_res_equip = (df_equip.loc[_equip_1, '_dmg_res'] + df_equip.loc[_equip_2, '_dmg_res'] + df_equip.loc[
             _equip_3, '_dmg_res'] + df_equip.loc[_equip_4, '_dmg_res']) * _adder
 
+        _power_equip = tools.get_power(_hp_equip, _atk_equip, _def_equip, _crit_equip, _crit_res_equip, _precise_equip,
+                                       _parry_equip, _dmg_res_equip)
+
         # 天赋属性
         if _talent >= 0:
             _hp_talent = _hp_base * hp_per_talent[_talent] / 10000
@@ -200,6 +180,7 @@ for _id in hero_list:
             _precise_talent = precise_talent[_talent]
             _parry_talent = parry_talent[_talent]
             _dmg_res_talent = dmg_res_talent[_talent]
+
         else:
             _hp_talent = 0
             _atk_talent = 0
@@ -210,6 +191,8 @@ for _id in hero_list:
             _parry_talent = 0
             _dmg_res_talent = 0
 
+        _power_talent = tools.get_power(_hp_talent, _atk_talent, _def_talent, _crit_talent, _crit_res_talent,
+                                        _precise_talent, _parry_talent, _dmg_res_talent)
         # 研究所核心属性
         if _core == 0:
             _hp_academy = 0
@@ -219,6 +202,8 @@ for _id in hero_list:
             _hp_academy = df_academy.loc[_core, '_hp_' + _type]
             _atk_academy = df_academy.loc[_core, '_atk_' + _type]
             _def_academy = df_academy.loc[_core, '_def_' + _type]
+
+        _power_academy = tools.get_power(_hp_academy, _atk_academy, _def_academy)
 
         # 职阶属性
         if _job == 0:
@@ -240,6 +225,9 @@ for _id in hero_list:
             _parry_job = df_job.loc[_job, '_parry_' + _type]
             _dmg_res_job = df_job.loc[_job, '_dmg_res_' + _type]
 
+        _power_job = tools.get_power(_hp_job, _atk_job, _def_job, _crit_job, _crit_res_job, _precise_job, _parry_job,
+                                     _dmg_res_job)
+
         # 机械核心属性
         if _mechanical > 0:
 
@@ -258,6 +246,8 @@ for _id in hero_list:
             _hp_mechanical = 0
             _atk_mechanical = 0
             _def_mechanical = 0
+
+        _power_mechanical = tools.get_power(_hp_mechanical, _atk_mechanical, _def_mechanical)
 
         # 限制器属性 1为固定值 2为百分比 3为光环固定值 4为光环百分比 5为阵营光环固定值 6为阵营光环百分比
         #          12、14、16为百分比转固定值
@@ -399,6 +389,8 @@ for _id in hero_list:
             _aura_limiter = ''
             _type_aura_limiter = ''
 
+        _power_limiter = tools.get_power(_hp_limiter, _atk_limiter, _def_limiter)
+
         _hp = _hp_base + _hp_equip + _hp_talent + _hp_academy + _hp_job + _hp_mechanical + _hp_limiter
         _atk = _atk_base + _atk_equip + _atk_talent + _atk_academy + _atk_job + _atk_mechanical + _atk_limiter
         _def = _def_base + _def_equip + _def_talent + _def_academy + _def_job + _def_mechanical + _def_limiter
@@ -408,6 +400,8 @@ for _id in hero_list:
         _precise = _precise_equip + _precise_talent + _precise_job
         _parry = _parry_equip + _parry_talent + _parry_job
         _dmg_res = _dmg_res_equip + _dmg_res_talent + _dmg_res_job
+
+        _power_total = tools.get_power(_hp, _atk, _def, _crit, _crit_res, _precise, _parry, _dmg_res)
 
         final_hp.append(_hp)
         final_atk.append(_atk)
@@ -421,7 +415,18 @@ for _id in hero_list:
         final_aura.append(_aura_limiter)
         final_type_aura.append(_type_aura_limiter)
 
+        power_base.append(_power_base)
+        power_equip.append(_power_equip)
+        power_talent.append(_power_talent)
+        power_academy.append(_power_academy)
+        power_job.append(_power_job)
+        power_mechanical.append(_power_mechanical)
+        power_limiter.append(_power_limiter)
+        power_total.append(_power_total)
+
         _level_list.append(_level)
 
     sv.save_hero_status(_id, _level_list, df_status, final_hp, final_atk, final_def, final_crit, final_crit_res,
-                        final_crit_dmg, final_precise, final_parry, final_dmg_res, final_aura, final_type_aura)
+                        final_crit_dmg, final_precise, final_parry, final_dmg_res, final_aura, final_type_aura,
+                        power_base, power_equip, power_talent, power_academy, power_job, power_mechanical,
+                        power_limiter, power_total)

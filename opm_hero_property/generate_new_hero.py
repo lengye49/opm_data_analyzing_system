@@ -1,5 +1,6 @@
 import pandas as pd
 import save_hero_info as sv
+import opm_property_tools as tools
 
 hero_list = [102, 103]
 
@@ -99,7 +100,7 @@ def cal_property(_levels, _qualities, per_hp=1.0, per_atk=1.0, per_def=1.0, _key
     _atk_base = {}
     _def_base = {}
     for j in range(0, len(_levels)):
-        _real_lv = cp.get_real_level(_levels[j], 0)
+        _real_lv = tools.get_real_level(_levels[j], 0)
         _lv_growth_hp = df_level_growth.loc[_real_lv, '_hp_inc']
         _lv_growth_atk = df_level_growth.loc[_real_lv, '_atk_inc']
         _lv_growth_def = df_level_growth.loc[_real_lv, '_def_inc']
@@ -112,7 +113,7 @@ def cal_property(_levels, _qualities, per_hp=1.0, per_atk=1.0, per_def=1.0, _key
         _quality_atk_value = atk_quality_value[_quality - 1]
         _quality_def_value = def_quality_value[_quality - 1]
 
-        _grade = cp.get_grade(_levels[j])
+        _grade = tools.get_grade(_levels[j])
         _grade_hp_value = hp_grade_value[_grade - 1]
         _grade_atk_value = atk_grade_value[_grade - 1]
         _grade_def_value = def_grade_value[_grade - 1]
