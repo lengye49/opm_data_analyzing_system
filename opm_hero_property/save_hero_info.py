@@ -122,7 +122,6 @@ def save_hero_quality_max_value(hero_id, hp_pve, atk_pve, def_pve, hp_pvp, atk_p
     ws['AE1'] = 'PVP阵营光环最大值'
 
     for i in range(0, 16):
-        print(i)
         s1 = '21,' + str(int(hp_pve[i])) + ';31,' + str(int(atk_pve[i])) + ';41,' + str(int(def_pve[i]))
         s2 = '21,' + str(int(hp_pve_aura[i])) + ';31,' + str(int(atk_pve_aura[i])) + ';41,' + str(
             int(def_pve_aura[i]))

@@ -288,14 +288,14 @@ def load_hero_power(hero_id, i):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'status')
 
-    _p_base = ws['AL' + str(i + 2)]
-    _p_equip = ws['AM' + str(i + 2)]
-    _p_talent = ws['AN' + str(i + 2)]
-    _p_academy = ws['AO' + str(i + 2)]
-    _p_job = ws['AP' + str(i + 2)]
-    _p_mechanical = ws['AQ' + str(i + 2)]
-    _p_limiter = ws['AR' + str(i + 2)]
-    _p_total = ws['AS' + str(i + 2)]
+    _p_base = ws['AL' + str(i + 2)].value
+    _p_equip = ws['AM' + str(i + 2)].value
+    _p_talent = ws['AN' + str(i + 2)].value
+    _p_academy = ws['AO' + str(i + 2)].value
+    _p_job = ws['AP' + str(i + 2)].value
+    _p_mechanical = ws['AQ' + str(i + 2)].value
+    _p_limiter = ws['AR' + str(i + 2)].value
+    _p_total = ws['AS' + str(i + 2)].value
 
     return _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter, _p_total
 
