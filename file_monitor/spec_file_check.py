@@ -33,7 +33,10 @@ excel_path = get_version_path()
 csv_list = os.listdir(csv_path)
 csv_list.remove('common')
 csv_list.remove('server_json.txt')
-csv_list.remove('.gitignore')
+if '.gitignore' in csv_list:
+    csv_list.remove('.gitignore')
+if '.DS_Storein' in csv_list:
+    csv_list.remove('.DS_Storein')
 
 excel_list = os.listdir(excel_path)
 excel_list.remove('languages')
@@ -43,5 +46,4 @@ excel_list.remove('xlsx_origin')
 
 for x in csv_list:
     if x not in excel_list:
-        print('csv服务器：' + str(x) + '在excel中不存在！')
-
+        print('\n\n\n\nCan not find csv directory server:' + str(x) + ' in excel_origin!\n\n\n\n')
