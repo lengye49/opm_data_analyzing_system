@@ -389,7 +389,7 @@ def save_hero_limiter_growth(hero_id, hp_pve_v, hp_pve_per, hp_pve_aura, hp_pve_
     wb.save(path)
 
 
-def get_skills(_level, _talent, _job, _limiter):
+def get_skills(_level, _talent, _job, _limiter, _limiter_on):
     s = ''
     if _level > 220:
         s = '5,3,3,3'
@@ -462,12 +462,15 @@ def get_skills(_level, _talent, _job, _limiter):
     else:
         s += ',0,0,0'
 
-    s += ',' + str(_limiter)
+    if _limiter_on:
+        s += ',' + str(_limiter)
+
     return s
 
 
 def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg, precise, parry, dmg_res, aura,
-                     type_aura, _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter, _p_total):
+                     type_aura, _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter, _p_total,
+                     limiter_on):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'status')
 
@@ -543,7 +546,7 @@ def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg,
         ws['P' + str(i + 2)] = 0
         ws['Q' + str(i + 2)] = ''
         ws['R' + str(i + 2)] = df.loc[k, '_talent']
-        ws['S' + str(i + 2)] = get_skills(levels[i], df.loc[k, '_talent'], df.loc[k, '_job'], df.loc[k, '_limiter'])
+        ws['S' + str(i + 2)] = get_skills(levels[i], df.loc[k, '_talent'], df.loc[k, '_job'], df.loc[k, '_limiter'], limiter_on)
 
         ws['T' + str(i + 2)] = hp[i]
         ws['U' + str(i + 2)] = atk[i]

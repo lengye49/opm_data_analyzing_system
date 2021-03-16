@@ -15,7 +15,7 @@ import opm_property_tools as tools
 #              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
 #              101, 102, 103]
 
-hero_list = [102, 84]
+hero_list = [104, 105]
 
 
 # 读取设定表
@@ -429,4 +429,4 @@ for _id in hero_list:
     sv.save_hero_status(_id, _level_list, df_status, final_hp, final_atk, final_def, final_crit, final_crit_res,
                         final_crit_dmg, final_precise, final_parry, final_dmg_res, final_aura, final_type_aura,
                         power_base, power_equip, power_talent, power_academy, power_job, power_mechanical,
-                        power_limiter, power_total)
+                        power_limiter, power_total, _limiter_on)
