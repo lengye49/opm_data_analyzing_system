@@ -35,11 +35,11 @@ def get_max(v1,v2,v3,v4,v5,v6,v7,v8,v9):
 
 
 df = pd.read_csv('1.csv', index_col=1, header=0)
+df = df.drop(df[df['s_stage.触发用户数']==0].index)
 # df = pd.read_excel('1.xlsx', index_col=1, header=0)
 df['lv'] = df.apply(lambda col:get_max(col['1号位突破限制器等级'],col['2号位突破限制器等级'],col['3号位突破限制器等级'],
                                        col['4号位突破限制器等级'],col['5号位突破限制器等级'],col['6号位突破限制器等级'],
                                        col['7号位突破限制器等级'],col['8号位突破限制器等级'],col['9号位突破限制器等级']),axis=1)
-df = df.drop(df[df['s_stage.触发用户数']==0].index)
 df = df.groupby('账户ID').agg({'lv':'max'})
 df = df.groupby('lv').agg({'lv': 'count'})
 df.to_excel('test.xlsx')
