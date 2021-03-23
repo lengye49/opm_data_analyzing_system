@@ -49,23 +49,27 @@ http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=2814749767106561
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=2814749767106561&note=DrawCard&server_id=2&action=guide/rmTriggerRecord
 战意等级
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421650&lv=310&server_id=2&action=hero/actionOverStep
+限制器和机械核心
+http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=18577348462903345&heroId=36&mechanical=20&limiter=5&server_id=66&action=hero/actionUpgradeHeroInfo   
     """
     print(s)
 
 
 def get_rand_hero():
-    hero_list = [1,2,8,10,11,12,13,18,19,20,21,23,24,25,26,27,31,32,34,35,36,38,39,41,42,43,44,45,46,49,51,60,61,63,83,84,85,86,87,88,89,93]
+    hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 34, 35, 36, 38, 39, 41, 42, 43,
+                 44, 45, 46, 49, 51, 60, 61, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100,
+                 101, 102, 103, 104, 105]
     return hero_list
 
 
 def get_rand_quality():
-    hero_quality = [13,15]
+    hero_quality = [13, 15]
     return random.choice(hero_quality)
 
 
 def get_rand_level(quality):
     if quality <= 5:
-        return random.randint(1,100)
+        return random.randint(1, 100)
     else:
         return random.randint(20 * quality - 19, 20 * quality)
 
@@ -79,7 +83,8 @@ def get_talent_level(hero_id):
 
 
 def get_equip():
-    equip_list = [3109,2109,1109,3209,2209,1209,3309,2309,1309,3409,2409,1409,3110,2110,1110,3210,2210,1210,3310,2310,1310,3410,2410,1410]
+    equip_list = [3109, 2109, 1109, 3209, 2209, 1209, 3309, 2309, 1309, 3409, 2409, 1409, 3110, 2110, 1110, 3210, 2210,
+                  1210, 3310, 2310, 1310, 3410, 2410, 1410]
     return equip_list
 
 
@@ -89,7 +94,7 @@ def get_chapter_stage():
     return chapter, stage
 
 
-def random_change_data(server,user_id,package):
+def random_change_data(server, user_id, package):
     hero_list = get_rand_hero()
     quality = get_rand_quality()
     equip_id_list = get_equip()
@@ -165,25 +170,26 @@ def add_hero(hero_id, quality, lv, talent, package='dev'):
 
 
 def change_academy(lv, package='dev'):
-    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&lv=300&server_id={server_id}' \
+    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&lv={lv}&server_id={server_id}' \
           f'&action=hero/actionAcademyLevel'
     response = requests.get(url)
-    print('修改研究所等级:' + response.text)
+    print('修改研究所等级:' + str(lv) + ' ' + response.text)
 
 
 def change_job(lv1, lv2, lv3, lv4, lv5, package='dev'):
     url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}' \
-          f'&jobLv1=100&jobLv2=100&jobLv3=100&jobLv4=100&jobLv5=100&server_id={server_id}' \
+          f'&jobLv1={lv1}&jobLv2={lv2}&jobLv3={lv3}&jobLv4={lv4}&jobLv5={lv5}&server_id={server_id}' \
           f'&action=hero/actionHeroJobLevels'
     response = requests.get(url)
-    print('修改职阶等级:' + response.text)
+    print(
+        '修改职阶等级:' + str(lv1) + ' ' + str(lv2) + ' ' + str(lv3) + ' ' + str(lv4) + ' ' + str(lv5) + ' ' + response.text)
 
 
 def change_hero_connect(lv, package='dev'):
-    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&lv=460&server_id={server_id}' \
+    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&lv={lv}&server_id={server_id}' \
           f'&action=hero/actionOverStep'
     response = requests.get(url)
-    print('修改战意连协等级:' + response.text)
+    print('修改战意连协等级:' + str(lv) + ' ' + response.text)
 
 
 def add_all_equips(package='dev'):
@@ -202,7 +208,7 @@ def change_assets(package='dev'):
 
 
 def change_props(package='dev'):
-    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&p=all,999&' \
+    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&p=all,9999&' \
           f'server_id={server_id}&action=prop/update'
     response = requests.get(url)
     print('添加所有道具:' + response.text)
@@ -213,6 +219,13 @@ def change_gm(package='dev'):
           f'server_id={server_id}&action=user/gmSetting'
     response = requests.get(url)
     print('修改GM:' + response.text)
+
+
+def change_limiter_and_mechanical(hero_id, limiter_lv, mechanical_lv, package='dev'):
+    url = f'http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}&' \
+          f'heroId={hero_id}&mechanical={mechanical_lv}&limiter={limiter_lv}&action=hero/actionUpgradeHeroInfo'
+    response = requests.get(url)
+    print('修改限制器和机械核心' + response.text)
 
 
 def generate_target_formation():
@@ -228,6 +241,7 @@ def generate_target_formation():
     academy = 0
     job = [0, 0, 0, 0, 0]
 
+    summary = ''
     for member in team_info:
 
         hero_str = member.split('/')
@@ -244,7 +258,6 @@ def generate_target_formation():
         talent = int(hero_info[4])
         # enhance = int(hero_info[5])
         # 添加英雄
-        add_hero(hero_id, quality, lv, talent)
 
         # equip1 = hero_info[6]
         # equip2 = hero_info[7]
@@ -258,7 +271,14 @@ def generate_target_formation():
         job[_idx] = _job
 
         limiter = int(hero_info[11])
-        # mechanical_core = int(hero_info[12])
+        mechanical_core = int(hero_info[12])
+
+        summary += df_hero.loc[hero_id, '_name'] + ',位置：' + str(hero_pos) + ',战意：' + str(connect_lv) + \
+                   ',研究所：' + str(academy) + ',职阶：' + str(_job) + ',限制器：' + str(limiter) + \
+                   ',机械核心：' + str(mechanical_core) + '\n'
+
+        add_hero(hero_id, quality, lv, talent)
+        change_limiter_and_mechanical(hero_id, limiter, mechanical_core)
 
     # 修改研究所等级
     change_academy(academy)
@@ -267,18 +287,23 @@ def generate_target_formation():
     # 添加所有装备
     add_all_equips()
     # 修改战意连协等级
-    if connect_lv>0:
+    if connect_lv <= 0:
+        pass
+    else:
         change_hero_connect(connect_lv)
     # 修改资源
     change_assets()
+    # 修改道具
+    change_props()
     # 修改GM
     change_gm()
+    print(summary)
     print('添加完成！')
 
 
 df_hero = pd.read_excel('../opm_hero_property/design/hero_design.xlsx', header=0, index_col=0)
-server_id = 0   # 2
-uid = ''    # 562949953421621
+server_id = 0  # 66
+uid = ''  # 18577348462903345
 
 
 def main():
@@ -286,9 +311,8 @@ def main():
     os.system('clear')
     print(
         '*' * 50 + '\n' + '*' * 50 + '\n' + '\t\t\t\t欢迎使用OPM集成脚本！\n'
-        + '\t\t\t\t\t\t\t\t----Made by CnSky\n' + '*' * 50 + '\n' + '*' * 50 + '\n'
-        + '注意事项：如有浏览器跳转，本脚本仅支持Chrome浏览器\n')
-
+        + '\t\t\t\t\t\t\t\t----Made by CnSky\n' + '*' * 50 + '\n' + '*' * 50 + '\n')
+    print('测试账号：66, 18577348462903345')
     while True:
         print('*' * 50)
         print('\n请选择命令(数字):'
