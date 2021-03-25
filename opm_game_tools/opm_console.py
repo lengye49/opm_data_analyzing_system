@@ -25,7 +25,7 @@ http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421345&
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421369&lv=7&exp=0&server_id=2&action=user/levelExpUpdate
 强者之路重置
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421621&server_id=2&action=labyrinth/resetNormalRefreshTime
-强者之路调整对应类型,层数
+极限模拟战调整对应类型,层数
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421412&p=11,2&server_id=6&action=extremeSimulation/changeRecord
 强者之路后退
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421412&server_id=5&num=10&action=labyrinth/back
@@ -228,11 +228,18 @@ def change_limiter_and_mechanical(hero_id, limiter_lv, mechanical_lv, package='d
     print('修改限制器和机械核心' + response.text)
 
 
+def change_stage():
+    url = f'http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}' \
+          f'&p={15},{20}&action=stage/changeRecord'
+    response = requests.get(url)
+    print(response.text)
+
+
 def generate_target_formation():
     global server_id
-    server_id = int(input('server_id ：'))
+    server_id = int(input('server_id : '))
     global uid
-    uid = int(input('uid ：'))
+    uid = int(input('uid : '))
 
     formation_str = input('formation : ')
     team_info = formation_str.split('$')
@@ -297,6 +304,8 @@ def generate_target_formation():
     change_props()
     # 修改GM
     change_gm()
+    # 临时将关卡调至15-20
+    change_stage()
     print(summary)
     print('添加完成！')
 
@@ -307,7 +316,7 @@ uid = ''  # 18577348462903345
 
 
 def main():
-    browser = webbrowser.get('Chrome')
+    # browser = webbrowser.get('Chrome')
     os.system('clear')
     print(
         '*' * 50 + '\n' + '*' * 50 + '\n' + '\t\t\t\t欢迎使用OPM集成脚本！\n'
