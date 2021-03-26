@@ -1,56 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# author sky
+# author cn_sky
 import requests
 import json
-import time
 
 
-def ding_talk(_t='text'):
+def ding_talk(content=''):
+    url = 'https://oapi.dingtalk.com/robot/send?access_token' \
+          '=786b6e320aa4bc4889d5924c014b1b68d31f6d90e116d4597e347cbae655020c'
+    content = 'python提示:\n' + content
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json;charset=utf-8"
     }
-    data1 = {"msgtype": "text",
+    data = {"msgtype": "text",
              "text": {
-                 "content": "python警告:\nLet's go!"
+                 "content": content
              },
              "at": {
                  "atMobiles": [
-                     "15810186753",
-                     "15311449173"
+                     "15810186753"
                  ],
                  "isAtAll": False
              }
              }
-    # data2 = {
-    #     "msgtype": "link",
-    #     "link": {
-    #         "text": "机器人的使用文档，你值得拥有",
-    #         "title": "钉钉机器人使用文档",
-    #         "picUrl": "",
-    #         "messageUrl": "https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq"
-    #     }
-    # }
-    if _t == 'text':
-        print('sending text...')
-        json_data = json.dumps(data1)
-    # elif _t == 'link':
-    #     print('sending link...')
-    #     json_data = json.dumps(data2)
 
-    result = requests.post(
-        url='https://oapi.dingtalk.com/robot/send?access_token=6c59df7784153aaa25094a5c0420d42dd65fe6ccdad83b4a2809ad9a444f7e82',
-        data=json_data, headers=headers)
-    print(result)
+    # print(json.dumps(data))
+    result = requests.post(url, data=json.dumps(data), headers=headers)
+    print(result.text)
 
-
-target_time = time.mktime(time.strptime("2020-12-31 15:57:00", "%Y-%m-%d %H:%M:%S"))
-while True:
-    now = time.time()
-    print(now-target_time)
-    if now > target_time:
-        ding_talk('text')
-        break
-
-# ding_talk('text')
-# ding_talk('text')
+# ding_talk(text)
+# ding_talk(t)

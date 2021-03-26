@@ -1,7 +1,14 @@
+# export FLASK_APP=demo.py
+# flask run --host=0.0.0.0
+
+import sys
+sys.path.append('/Users/oas/Documents/work/github/opm_data_analyzing_system/')
+
 from flask import Flask
-from markupsafe import escape
+from opm_tga import tga
 
 app = Flask(__name__)
+print(sys.path)
 
 
 @app.route('/')
@@ -28,3 +35,8 @@ def show_cmd0_help():
 @app.route('/cmd0/run/<string:param>')
 def run_cmd0(param):
     return {'hp':100,'atk':50,'param':param}
+
+
+@app.route('/cmd1')
+def run_cmd1():
+    return tga.get_all_stats()

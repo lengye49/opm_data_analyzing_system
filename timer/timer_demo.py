@@ -1,31 +1,34 @@
+# MMP, import顺序不一样居然都会报无限递归的错误！！！
+# 这个脚本需要放到服务器上运行
+import opm_tga.tga as tga
+from ding_robot.robot_talk import ding_talk
 import threading
 import time
 
-curTime = time.strftime("%Y-%M-%D", time.localtime())  # 记录当前时间
-execF = False
 
-
-def exec_task():
-    # 具体任务执行内容
-    print("execTask executed!")
+def daily_mission():
+    s = tga.get_all_stats()
+    ding_talk(s)
 
 
 def timer_task():
-    global execF
-    global curTime
-    if execF is False:
-        exec_task()  # 判断任务是否执行过，没有执行就执行
-        execF = True
-    else:  # 任务执行过，判断时间是否新的一天。如果是就执行任务
-        desTime = time.strftime("%Y-%M-%D", time.localtime())
-        if desTime > curTime:
-            execF = False  # 任务执行执行置值为
-            curTime = desTime
+    print(time.strftime("%Y-%m-%d, %H:%M:%S", time.localtime()))
+    daily_mission()
 
-    timer_1 = threading.Timer(5, timer_task)
-    timer_1.start()
+    global timer
+    timer= threading.Timer(86400, timer_task)
+    timer.start()
 
 
 if __name__ == "__main__":
-    timer = threading.Timer(5, timer_task)
+    timer = threading.Timer(2, timer_task)
     timer.start()
+
+
+# target_time = time.mktime(time.strptime("2020-12-31 15:57:00", "%Y-%m-%d %H:%M:%S"))
+# while True:
+#     now = time.time()
+#     print(now-target_time)
+#     if now > target_time:
+#         ding_talk('text')
+#         break
