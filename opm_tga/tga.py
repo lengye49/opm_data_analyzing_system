@@ -93,7 +93,8 @@ def get_max_extreme_floor():
   TIMESTAMP '2021-03-24'))) group by ta_ev."extreme_type") GROUP BY group_0) ORDER BY total_amount DESC limit 1000"""
 
     t1 = dt.now().strftime('%Y-%m-%d')
-    sql.replace('2021-03-25', t1)
+    sql = sql.replace('2021-03-25', t1)
+    print(sql)
     data = get_tga_data(sql)
     result = get_extreme_floor(data)
     return result
@@ -111,7 +112,8 @@ def get_max_stage():
     '2020-09-29' and "@vpc_tz_#event_time" < date_add('day', 1, TIMESTAMP '2021-03-24'))) group by ta_date_trunc('day',
     ta_ev."@vpc_tz_#event_time", 1), ta_ev."main_stage") GROUP BY group_0) ORDER BY group_0 limit 1000"""
     t1 = dt.now().strftime('%Y-%m-%d')
-    sql.replace('2021-03-25', t1)
+    sql = sql.replace('2021-03-25', t1)
+    print(sql)
     data = get_tga_data(sql)
     result = get_stage(data)
     return result
@@ -124,11 +126,12 @@ def get_max_player_level():
     is not null and "#vp@TimeZone">=-12 and "#vp@TimeZone"<=14, date_add('second', cast((0-"#vp@TimeZone")*3600 as 
     integer), "#event_time"), "#event_time") "@vpc_tz_#event_time" from (select * , try_cast((try("time"-"time")) as 
     double) as "#vp@TimeZone" from ( v_event_15 ) logic_table)) ta_ev where (( ( "$part_event" IN ( 's_player_level_up'
-     ) ) )) and (("$part_date" between '2021-02-23' and '2021-03-26') and ("@vpc_tz_#event_time" >= timestamp 
+     ) ) )) and (("$part_date" between '2021-02-23' and '2021-03-25') and ("@vpc_tz_#event_time" >= timestamp 
      '2021-02-24' and "@vpc_tz_#event_time" < date_add('day', 1, TIMESTAMP '2021-03-25'))) ) ) ORDER BY total_amount 
      DESC limit 1000"""
     t1 = dt.now().strftime('%Y-%m-%d')
-    sql.replace('2021-03-25', t1)
+    sql = sql.replace('2021-03-25', t1)
+    print(sql)
     data = get_tga_data(sql)
     return '最大玩家等级: ' + str(int(data[0][1]))
 
@@ -140,11 +143,12 @@ def get_max_hero_level():
     null and "#vp@TimeZone">=-12 and "#vp@TimeZone"<=14, date_add('second', cast((0-"#vp@TimeZone")*3600 as integer), 
     "#event_time"), "#event_time") "@vpc_tz_#event_time" from (select * , try_cast((try("time"-"time")) as double) as 
     "#vp@TimeZone" from ( v_event_15 ) logic_table)) ta_ev where ((( ( "$part_event" IN ( 's_connect_upgrade' ) ) )) 
-    and (ta_ev."connect_level" > 4.2E+2)) and (("$part_date" between '2021-02-23' and '2021-03-26') and 
+    and (ta_ev."connect_level" > 4.2E+2)) and (("$part_date" between '2021-02-23' and '2021-03-25') and 
     ("@vpc_tz_#event_time" >= timestamp '2021-02-24' and "@vpc_tz_#event_time" < date_add('day', 1, TIMESTAMP 
     '2021-03-25'))) ) ) ORDER BY total_amount DESC limit 1000"""
     t1 = dt.now().strftime('%Y-%m-%d')
-    sql.replace('2021-03-25', t1)
+    sql = sql.replace('2021-03-25', t1)
+    print(sql)
     data = get_tga_data(sql)
     return '最大战意连协等级: ' + str(int(data[0][1]))
 
@@ -156,3 +160,10 @@ def get_all_stats():
         + get_max_player_level() + '\n' \
         + get_max_hero_level()
     return s
+
+
+if __name__ == '__main__':
+    print(get_max_stage())
+    print(get_max_extreme_floor())
+    print(get_max_hero_level())
+    print(get_max_player_level())
