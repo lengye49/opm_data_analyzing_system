@@ -2,7 +2,7 @@ import pandas as pd
 import save_hero_info as sv
 import opm_property_tools as tools
 
-hero_list = [107]
+hero_list = [108]
 
 # 属性总值
 HP_STD = 304808
