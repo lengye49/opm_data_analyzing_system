@@ -29,7 +29,7 @@ logging.basicConfig()
 +---------------------------------------------------------------+
 '''
 
-FIN    = 0x80
+FIN = 0x80
 OPCODE = 0x0f
 MASKED = 0x80
 PAYLOAD_LEN = 0x7f
@@ -37,11 +37,11 @@ PAYLOAD_LEN_EXT16 = 0x7e
 PAYLOAD_LEN_EXT64 = 0x7f
 
 OPCODE_CONTINUATION = 0x0
-OPCODE_TEXT         = 0x1
-OPCODE_BINARY       = 0x2
-OPCODE_CLOSE_CONN   = 0x8
-OPCODE_PING         = 0x9
-OPCODE_PONG         = 0xA
+OPCODE_TEXT = 0x1
+OPCODE_BINARY = 0x2
+OPCODE_CLOSE_CONN = 0x8
+OPCODE_PING = 0x9
+OPCODE_PONG = 0xA
 
 
 # -------------------------------- API ---------------------------------
@@ -88,24 +88,24 @@ class API():
 
 class WebsocketServer(ThreadingMixIn, TCPServer, API):
     """
-	A websocket server waiting for clients to connect.
+A websocket server waiting for clients to connect.
 
-    Args:
-        port(int): Port to bind to
-        host(str): Hostname or IP to listen for connections. By default 127.0.0.1
-            is being used. To accept connections from any client, you should use
-            0.0.0.0.
-        loglevel: Logging level from logging module to use for logging. By default
-            warnings and errors are being logged.
+Args:
+    port(int): Port to bind to
+    host(str): Hostname or IP to listen for connections. By default 127.0.0.1
+        is being used. To accept connections from any client, you should use
+        0.0.0.0.
+    loglevel: Logging level from logging module to use for logging. By default
+        warnings and errors are being logged.
 
-    Properties:
-        clients(list): A list of connected clients. A client is a dictionary
-            like below.
-                {
-                 'id'      : id,
-                 'handler' : handler,
-                 'address' : (addr, port)
-                }
+Properties:
+    clients(list): A list of connected clients. A client is a dictionary
+        like below.
+            {
+             'id'      : id,
+             'handler' : handler,
+             'address' : (addr, port)
+            }
     """
 
     allow_reuse_address = True
@@ -196,7 +196,7 @@ class WebSocketHandler(StreamRequestHandler):
         except ValueError as e:
             b1, b2 = 0, 0
 
-        fin    = b1 & FIN
+        fin = b1 & FIN
         opcode = b1 & OPCODE
         masked = b2 & MASKED
         payload_length = b2 & PAYLOAD_LEN
@@ -256,7 +256,7 @@ class WebSocketHandler(StreamRequestHandler):
             if not message:
                 logger.warning("Can\'t send message, message is not valid UTF-8")
                 return False
-        elif sys.version_info < (3,0) and (isinstance(message, str) or isinstance(message, unicode)):
+        elif sys.version_info < (3, 0) and (isinstance(message, str) or isinstance(message, unicode)):
             pass
         elif isinstance(message, str):
             pass
@@ -264,7 +264,7 @@ class WebSocketHandler(StreamRequestHandler):
             logger.warning('Can\'t send message, message has to be a string or bytes. Given type is %s' % type(message))
             return False
 
-        header  = bytearray()
+        header = bytearray()
         payload = encode_to_UTF8(message)
         payload_length = len(payload)
 
@@ -329,11 +329,11 @@ class WebSocketHandler(StreamRequestHandler):
     @classmethod
     def make_handshake_response(cls, key):
         return \
-          'HTTP/1.1 101 Switching Protocols\r\n'\
-          'Upgrade: websocket\r\n'              \
-          'Connection: Upgrade\r\n'             \
-          'Sec-WebSocket-Accept: %s\r\n'        \
-          '\r\n' % cls.calculate_response_key(key)
+            'HTTP/1.1 101 Switching Protocols\r\n' \
+            'Upgrade: websocket\r\n' \
+            'Connection: Upgrade\r\n' \
+            'Sec-WebSocket-Accept: %s\r\n' \
+            '\r\n' % cls.calculate_response_key(key)
 
     @classmethod
     def calculate_response_key(cls, key):
@@ -353,7 +353,7 @@ def encode_to_UTF8(data):
         logger.error("Could not encode data to UTF-8 -- %s" % e)
         return False
     except Exception as e:
-        raise(e)
+        raise (e)
         return False
 
 
@@ -363,4 +363,4 @@ def try_decode_UTF8(data):
     except UnicodeDecodeError:
         return False
     except Exception as e:
-        raise(e)
+        raise (e)
