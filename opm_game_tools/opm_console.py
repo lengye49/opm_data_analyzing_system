@@ -51,6 +51,8 @@ http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=2814749767106561
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421650&lv=310&server_id=2&action=hero/actionOverStep
 限制器和机械核心
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=18577348462903345&heroId=36&mechanical=20&limiter=5&server_id=66&action=hero/actionUpgradeHeroInfo   
+查看开服时间列表
+http://center-mpsen.games.oasgames.com:8010/admin/getServerInitTime
     """
     print(s)
 
