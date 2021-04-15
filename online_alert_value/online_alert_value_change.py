@@ -1,12 +1,12 @@
 import openpyxl
 
 wb = openpyxl.load_workbook('Alert.xlsx')
-sh = wb['Sheet1']
+sh = wb['design']
 
 alert = []
 
-for x in range(3,96):
-    for y in range(3,20):
+for x in range(3,134):
+    for y in range(3,23):
         print(x,y)
         if sh.cell(x,y).value > -1:
             alert.append((sh.cell(x,1).value,sh.cell(1,y).value,sh.cell(x,y).value,sh.cell(x,2).value))

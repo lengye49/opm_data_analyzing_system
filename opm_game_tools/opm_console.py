@@ -1,6 +1,4 @@
 import os
-import webbrowser
-import pyperclip
 import requests
 import random
 import pandas as pd
