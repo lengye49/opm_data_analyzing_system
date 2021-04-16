@@ -177,12 +177,39 @@ def change_academy(lv, package='dev'):
 
 
 def change_job(lv1, lv2, lv3, lv4, lv5, package='dev'):
+    s = ''
+    if lv1 > 0:
+        s += 'jobLv1=' + str(lv1)
+    if lv2 > 0:
+        if s == '':
+            s += 'jobLv2=' + str(lv2)
+        else:
+            s += '&jobLv2=' + str(lv2)
+    if lv3 > 0:
+        if s == '':
+            s += 'jobLv3=' + str(lv3)
+        else:
+            s += '&jobLv3=' + str(lv3)
+    if lv4 > 0:
+        if s == '':
+            s += 'jobLv4=' + str(lv4)
+        else:
+            s += '&jobLv4=' + str(lv4)
+    if lv5 > 0:
+        if s == '':
+            s += 'jobLv5=' + str(lv5)
+        else:
+            s += '&jobLv5=' + str(lv5)
+
+    if s == '':
+        return
+
     url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}' \
-          f'&jobLv1={lv1}&jobLv2={lv2}&jobLv3={lv3}&jobLv4={lv4}&jobLv5={lv5}&server_id={server_id}' \
-          f'&action=hero/actionHeroJobLevels'
+          f'&{s}&server_id={server_id}&action=hero/actionHeroJobLevels'
+    print(url)
     response = requests.get(url)
     print(
-        '修改职阶等级:' + str(lv1) + ' ' + str(lv2) + ' ' + str(lv3) + ' ' + str(lv4) + ' ' + str(lv5) + ' ' + response.text)
+        '修改职阶等级:' + response.text)
 
 
 def change_hero_connect(lv, package='dev'):

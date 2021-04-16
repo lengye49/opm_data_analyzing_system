@@ -6,7 +6,7 @@ sh = wb['design']
 alert = []
 
 for x in range(3,134):
-    for y in range(3,23):
+    for y in range(3,31):
         print(x,y)
         if sh.cell(x,y).value > -1:
             alert.append((sh.cell(x,1).value,sh.cell(1,y).value,sh.cell(x,y).value,sh.cell(x,2).value))
@@ -43,5 +43,5 @@ for line in alert:
     sh2.cell(count + 4, 5).value = line[2]
     sh2.cell(count + 4, 6).value = line[3]
     count += 1
-print(alert)
+# print(alert)
 wb.save('Alert.xlsx')
