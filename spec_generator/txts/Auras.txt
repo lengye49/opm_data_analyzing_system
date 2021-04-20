@@ -1,0 +1,12 @@
+int#string#string#string#int#int
+Id#condition_behavior#selector_behavior#aura_effect#general_eff#technique
+Id#触发树#范围树#BUFF ID#展示效果#特质
+10601#UnitOnSite#TopAbilityAlive#10600501#0#3
+10491#UnitOnSite#AllyAlive#10490403#0#3
+10492#UnitOnSite#AllyAlive#10490504#0#3
+10831#UnitOnSite#AllEmemyAlive#10830201#0#3
+10401#UnitOnSite#SelfAlive#10400601#0#2
+10402#UnitOnSite#SelfAlive#10400901#0#2
+10621#UnitOnTargetwithWatchDog#SelfAlive#10620202#0#3
+10622#UnitOnTargetwithWatchDog#SelfAlive#10620303#0#3
+10921#UnitOnTargetwithpiggod#SelfAlive#10920901#0#2
