@@ -2,7 +2,7 @@ import pandas as pd
 import save_hero_info as sv
 import opm_property_tools as tools
 
-hero_list = [108]
+hero_list = [109]
 
 # 属性总值
 HP_STD = 304808
@@ -35,6 +35,7 @@ CRIT_BASE = 0.05
 HP_PER_PARTNER = 0.08
 ATK_PER_PARTNER = 0.1
 DEF_PER_PARTNER = 0.1
+HP_PARTNER = 4400
 HP_PARTNER = 4400
 ATK_PARTNER = 960
 DEF_PARTNER = 400
