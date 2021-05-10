@@ -249,24 +249,26 @@ def change_gm(package='dev'):
 
 
 def change_limiter_and_mechanical(hero_id, limiter_lv, mechanical_lv, package='dev'):
-    url = f'http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}&' \
+    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}&' \
           f'heroId={hero_id}&mechanical={mechanical_lv}&limiter={limiter_lv}&action=hero/actionUpgradeHeroInfo'
     response = requests.get(url)
     print('修改限制器和机械核心' + response.text)
 
 
-def change_stage():
-    url = f'http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}' \
-          f'&p={15},{20}&action=stage/changeRecord'
+def change_stage(package='dev'):
+    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&server_id={server_id}' \
+          f'&p={20},{20}&action=stage/changeRecord'
     response = requests.get(url)
     print(response.text)
 
 
-def generate_target_formation():
+def generate_target_formation(branch='dev'):
     global server_id
-    server_id = int(input('server_id : '))
     global uid
-    uid = int(input('uid : '))
+
+    if server_id == 0:
+        server_id = int(input('server_id : '))
+        uid = int(input('uid : '))
 
     formation_str = input('formation : ')
     team_info = formation_str.split('$')
@@ -311,28 +313,28 @@ def generate_target_formation():
                    ',研究所：' + str(academy) + ',职阶：' + str(_job) + ',限制器：' + str(limiter) + \
                    ',机械核心：' + str(mechanical_core) + '\n'
 
-        add_hero(hero_id, quality, lv, talent)
-        change_limiter_and_mechanical(hero_id, limiter, mechanical_core)
+        add_hero(hero_id, quality, lv, talent,package=branch)
+        change_limiter_and_mechanical(hero_id, limiter, mechanical_core,package=branch)
 
     # 修改研究所等级
-    change_academy(academy)
+    change_academy(academy,package=branch)
     # 修改职阶等级
-    change_job(job[0], job[1], job[2], job[3], job[4])
+    change_job(job[0], job[1], job[2], job[3], job[4],package=branch)
     # 添加所有装备
-    add_all_equips()
+    add_all_equips(package=branch)
     # 修改战意连协等级
     if connect_lv <= 0:
         pass
     else:
-        change_hero_connect(connect_lv)
+        change_hero_connect(connect_lv,package=branch)
     # 修改资源
-    change_assets()
+    change_assets(package=branch)
     # 修改道具
-    change_props()
+    change_props(package=branch)
     # 修改GM
-    change_gm()
+    change_gm(package=branch)
     # 临时将关卡调至15-20
-    change_stage()
+    change_stage(package=branch)
     print(summary)
     print('添加完成！')
 
@@ -354,6 +356,7 @@ def main():
         print('\n请选择命令(数字):'
               '\n[1] 使用一键增强脚本'
               '\n[2] 生成目标阵容'
+              '\n[3] 生成目标阵容-stage'
               '\n[0] 显示所有命令'
               )
         cmd = input('\nCommand: ')
@@ -364,6 +367,8 @@ def main():
             random_all_up()
         if cmd == '2':
             generate_target_formation()
+        if cmd == '3':
+            generate_target_formation("stage")
 
 
 if __name__ == '__main__':
