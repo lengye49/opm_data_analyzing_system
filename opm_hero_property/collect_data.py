@@ -4,7 +4,7 @@ from load_hero_info import load_hero_power
 # hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
 #              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
 #              101, 102, 103]
-hero_list = [8, 21, 27, 36, 63, 84, 102, 103]
+hero_list = [100, 101, 112]
 
 df_hero_info = pd.read_excel('design/hero_design.xlsx', sheet_name='卡牌设定', index_col=0, header=0)
 collect_index = 0  # 统计的序号，hero_design表设定状态的序号，从0开始
