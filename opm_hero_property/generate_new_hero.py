@@ -1,3 +1,7 @@
+"""
+这个脚本用于生成新英雄属性，需要先在hero_design中配置英雄的基本情况，并将id填到hero_list中
+"""
+
 import pandas as pd
 import save_hero_info as sv
 import opm_property_tools as tools

@@ -1,3 +1,8 @@
+"""
+这个脚本用于收集各个英雄的各状态属性，并输出到指定文件
+todo 尚未完成
+"""
+
 import pandas as pd
 from load_hero_info import load_hero_power
 

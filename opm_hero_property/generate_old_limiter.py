@@ -1,3 +1,7 @@
+"""
+这个脚本用于生成老角色的限制器
+"""
+
 import pandas as pd
 import save_hero_info as sv
 import opm_property_tools as tools
