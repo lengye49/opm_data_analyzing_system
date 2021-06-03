@@ -1,8 +1,28 @@
-# 这个表的目标是判断某个阶段玩家应该购买什么类型的礼包
-# 目前只考虑了giftpack相关的产出，未考虑基金、通行证、月卡、周卡、轮换活动等系列产出
-# 目前尚未考虑各礼包限制条件及玩家所处状态
+# 这个脚本的目标是判断某个阶段玩家在缺某种类型的资源时应该在哪里付费
+# 目前只考虑了giftpack相关的产出，todo 基金、通行证、月卡、周卡等系列产出
+# todo 各礼包限制条件及玩家所处状态和可购买次数限制
+# 目前尚未考虑活动道具转换为目标资源的途径
 
 import pandas as pd
+from datetime import datetime
+
+
+def is_on_time(start, end):
+    # 判断礼包是否还是时间段内
+    start = str(start)
+    end = str(end)
+
+    _t = datetime.strptime(target_time, '%Y%m%d')
+    if start != '0':
+        _s = datetime.strptime(start, '%Y%m%d%H%M')
+        if _t < _s:
+            return False
+    if end != '0':
+        _e = datetime.strptime(end, '%Y%m%d%H%M')
+        if _t > _e:
+            return False
+
+    return True
 
 
 def check_reward_type(reward):
@@ -62,7 +82,7 @@ def cal_type_percentage(_dict, vip, _id):
             total_value += _dict[k]
 
     # 总价值与总性价比
-    result = {'Total': total_value, 'Ratio': total_value/vip}
+    result = {'Total': total_value, 'Ratio': total_value / vip}
     # '等级%': 0, '品质%': 0, '装备%': 0, '天赋%': 0, '职阶%': 0, '限制器%': 0, '机器人%': 0, '机械核心%': 0, '其它%': 0}
 
     for k in _dict:
@@ -83,7 +103,6 @@ def cal_type_percentage(_dict, vip, _id):
 
 
 def update_dict(_dict, k, v):
-
     if k in _dict:
         _dict[k] += v
     else:
@@ -132,7 +151,7 @@ def get_basic_vip(price):
 
 def get_cost_performance(total_value, price):
     v = ratio.loc[price, 'vip_exp']
-    return total_value/v
+    return total_value / v
 
 
 def get_order_key(_dict):
@@ -141,6 +160,9 @@ def get_order_key(_dict):
     else:
         return 0
 
+
+order_key = '品质_ratio'
+target_time = '20200505'
 
 prop = pd.read_excel('resource_types.xlsx', header=0, sheet_name='prop', index_col=0)
 prop.dropna(axis=0, how='all')  # 删除空行
@@ -177,7 +199,7 @@ commodity = commodity.drop(['Platform', 'ProductId', 'CurrencyPrice', 'Tier'], a
 giftpack = pd.read_excel('GiftPack.xlsx', header=2, sheet_name='GiftPack')
 giftpack.dropna(axis=0, how='all')  # 删除空行
 giftpack = giftpack.drop([0])  # 删除中文标示
-giftpack = giftpack.fillna(0)   # 将NAN值改为0
+giftpack = giftpack.fillna(0)  # 将NAN值改为0
 
 # 获取礼包报价
 giftpack['Price'] = giftpack['Id'].apply(get_price)
@@ -189,19 +211,47 @@ s = giftpack.apply(lambda g: get_rewards(g['MainStageReward'], str(g['DesireList
 s.name = 'Contents'
 giftpack = giftpack.join(s)
 
+# 去掉时间不符合的礼包
+giftpack['OnTime'] = giftpack.apply(lambda g: is_on_time(g['StartTime'], g['EndTime']), axis=1)
+giftpack = giftpack.drop(giftpack[giftpack['OnTime'] == False].index)
+
+# 去掉关卡不符合的礼包
+
 # 清理GiftPack
 giftpack = giftpack.drop(
     ['Order', 'Name', 'Icon', 'Reward', 'RewardPreview', 'Desire', 'DesirePos', 'DefaultShow', 'NextId', 'IsFree',
      'Value', 'Prefab', 'DiamondDes', 'IconBg', 'HotVisible', 'VisibleCondition', 'ExtraPurchaseTimes', 'ImgSource',
      'Server', 'MainStage', 'MainStageRewardPreview', 'MainStageReward', 'Version', 'ChooseIdx', 'DesireList',
-     'ChooseReward'], axis=1)
+     'ChooseReward',], axis=1)
 
-order_key = '品质_ratio'
+# ['Id', 'Type', 'SubType', 'TimeType', 'PurchaseTimes', 'StartTime', 'EndTime', 'Note', 'Price', 'Vip', 'Contents']
+month_card1 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+               'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+month_card2 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+               'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+growth_fund1 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+growth_fund2 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+growth_fund3 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+battle_pass_1 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                 'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+battle_pass_2 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                 'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+battle_pass_3 = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+                 'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+hero_card = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+             'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+week_card = {'Id': 1, 'Type': 0, 'SubType': 0, 'TimeType': 0, 'PurchaseTimes': 0, 'StartTime': 0, 'EndTime': 0,
+             'Note': 0, 'Price': 0, 'Vip': 0, 'Contents': 0}
+other_packs = pd.DataFrame([month_card1, month_card2, growth_fund1, growth_fund2, growth_fund3, battle_pass_1,
+                            battle_pass_2, battle_pass_3, week_card])
 
 # GiftPack按某个值排序
 while True:
     req = input('选择当前缺少的资源类型:等级,品质,装备,天赋,职阶,限制器,机器人,机械核心,其它\n')
-    if req in ['等级','品质','装备','天赋','职阶','限制器','机器人','机械核心','其它']:
+    if req in ['等级', '品质', '装备', '天赋', '职阶', '限制器', '机器人', '机械核心', '其它']:
         order_key = req + '_ratio'
         giftpack['order_key'] = giftpack['Contents'].apply(get_order_key)
         giftpack = giftpack.sort_values(by='order_key', ascending=False)
