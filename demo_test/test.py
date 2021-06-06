@@ -1,6 +1,7 @@
 import pandas as pd
 import time
 from datetime import datetime
+import numpy as np
 
 # df = pd.DataFrame({'1': '2'},index=[0])
 #
@@ -29,11 +30,13 @@ from datetime import datetime
 # t1 = datetime.strptime(s1, '%Y%m%d%H%M')
 # t2 = datetime.strptime(s2, '%Y%m%d%H%M')
 # print(t1)
+#
+# qualities = []
+# for i in range(4):
+#     qualities.append([])
+#     for j in range(3):
+#         qualities[i].append(0)
+#
+# print(qualities)
 
-qualities = []
-for i in range(4):
-    qualities.append([])
-    for j in range(3):
-        qualities[i].append(0)
-
-print(qualities)
+p = np.arange(1,5,1)
