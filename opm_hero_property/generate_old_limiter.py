@@ -8,7 +8,7 @@ import opm_property_tools as tools
 import load_hero_info as ld
 
 
-hero_list = [100, 101]
+hero_list = [20, 51, 62, 88]
 
 # 限制器成长参数
 LIMITER_PVE_VALUE_PARAM = [0.20799999792, 0.271, 0.2492, 0.231, 0.2018, 0.1606, 0.1237, 0.06375, 0.03305, 0.0196]

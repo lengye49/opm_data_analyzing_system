@@ -330,7 +330,7 @@ def generate_target_formation(branch='dev'):
     # 修改资源
     change_assets(package=branch)
     # 修改道具
-    change_props(package=branch)
+    # change_props(package=branch)
     # 修改GM
     change_gm(package=branch)
     # 临时将关卡调至15-20

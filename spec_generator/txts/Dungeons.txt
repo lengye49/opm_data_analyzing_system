@@ -1,9 +1,0 @@
-int#string#string#string#int#int#int#int
-id#name#desc#type#mapid#monster#elite#boss
-id#name#desc#type#mapid#小怪组#精英组#Boss组
-1#侠客山庄#无效#0#0#1#1#0
-2#风雷岛#无效#1#1#1#1#0
-3#天山#无效#2#2#1#1#0
-4#少林寺#无效#0#0#1#1#0
-5#岔河村#无效#1#1#1#1#0
-6#曹家山#无效#2#2#1#1#0
