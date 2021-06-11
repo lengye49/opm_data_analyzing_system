@@ -6,8 +6,10 @@ import requests
 import time
 import threading
 
+
 def ding_talk(content=''):
-    url = 'https://oapi.dingtalk.com/robot/send?access_token=583a8ee9420b1d0fe980dc2133b04fb1c3955d6cfb61469b7d2f0cc40e02dd29'
+    url = 'https://oapi.dingtalk.com/robot/send?access_token' \
+          '=583a8ee9420b1d0fe980dc2133b04fb1c3955d6cfb61469b7d2f0cc40e02dd29 '
     content = '起来嗨:\n' + content
     headers = {
         "Content-Type": "application/json;charset=utf-8"
@@ -20,7 +22,7 @@ def ding_talk(content=''):
                  "atMobiles": [
 
                  ],
-                 "isAtAll": False
+                 "isAtAll": True
              }
              }
 
@@ -30,7 +32,7 @@ def ding_talk(content=''):
 
 
 def check_time():
-    print('checking', time.localtime())
+    # print('checking', time.localtime())
     now_day = time.strftime('%Y%m%d', time.localtime())
 
     # 节假日接口(工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2 )
