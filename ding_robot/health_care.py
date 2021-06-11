@@ -41,7 +41,7 @@ def check_time():
     now_hour = time.localtime().tm_hour
 
     global last_hour
-    if now_hour in [10, 11, 15, 17] and last_hour != now_hour:
+    if now_hour in [11, 15, 17] and last_hour != now_hour:
         if int(vop_data[now_day]) == 0:
             ding_talk('到点了！\n\n来呀，动起来！Come On Baby！')
         elif int(vop_data[now_day]) == 1:
