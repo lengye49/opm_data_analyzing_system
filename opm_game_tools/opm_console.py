@@ -7,6 +7,8 @@ import pandas as pd
 def show_all_commands():
     s = r"""全英雄
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421635&p=all&c=1&q=16&l=240&t=10&server_id=2&action=hero/create 
+指定英雄+装备
+http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=10414574138294360&p=8&c=1&q=16&l=240&t=10&server_id=37&e=3110,3210,3310,3410&action=hero/create
 全道具
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=GYINBKQDMYT&p=all,999&server_id=4&action=prop/update
 资源
@@ -162,9 +164,13 @@ def random_all_up():
             random_change_data(server_list[x], user_id_list[x], package)
 
 
-def add_hero(hero_id, quality, lv, talent, package='dev'):
-    url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&p={hero_id}&c=1&q={quality}' \
+def add_hero(hero_id, quality, lv, talent, equips='',package='dev'):
+    if equips=='':
+        url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&p={hero_id}&c=1&q={quality}' \
           f'&l={lv}&t={talent}&server_id={server_id}&action=hero/create'
+    else:
+        url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}&p={hero_id}&c=1&q={quality}' \
+              f'&l={lv}&t={talent}&e={equips}&server_id={server_id}&action=hero/create'
     response = requests.get(url)
     print(df_hero.loc[hero_id, '_name'] + ':' + response.text)
 
@@ -206,7 +212,7 @@ def change_job(lv1, lv2, lv3, lv4, lv5, package='dev'):
 
     url = f'http://center-mpsen-{package}.games.oasgames.com:8010/admin/magic?uid={uid}' \
           f'&{s}&server_id={server_id}&action=hero/actionHeroJobLevels'
-    print(url)
+    # print(url)
     response = requests.get(url)
     print(
         '修改职阶等级:' + response.text)
@@ -295,10 +301,11 @@ def generate_target_formation(branch='dev'):
         # enhance = int(hero_info[5])
         # 添加英雄
 
-        # equip1 = hero_info[6]
-        # equip2 = hero_info[7]
-        # equip3 = hero_info[8]
-        # equip4 = hero_info[9]
+        equip1 = hero_info[6].split(',')
+        equip2 = hero_info[7].split(',')
+        equip3 = hero_info[8].split(',')
+        equip4 = hero_info[9].split(',')
+        equips = equip1[0] + ',' + equip2[0] + ',' + equip3[0] + ',' + equip4[0]
 
         academy_job = hero_info[10].split(',')
         academy = int(academy_job[0])
@@ -313,26 +320,33 @@ def generate_target_formation(branch='dev'):
                    ',研究所：' + str(academy) + ',职阶：' + str(_job) + ',限制器：' + str(limiter) + \
                    ',机械核心：' + str(mechanical_core) + '\n'
 
-        add_hero(hero_id, quality, lv, talent,package=branch)
+        add_hero(hero_id, quality, lv, talent, equips=equips, package=branch)
         change_limiter_and_mechanical(hero_id, limiter, mechanical_core,package=branch)
 
     # 修改研究所等级
     change_academy(academy,package=branch)
+
     # 修改职阶等级
     change_job(job[0], job[1], job[2], job[3], job[4],package=branch)
+
     # 添加所有装备
-    add_all_equips(package=branch)
+    # add_all_equips(package=branch)
+
     # 修改战意连协等级
     if connect_lv <= 0:
         pass
     else:
         change_hero_connect(connect_lv,package=branch)
+
     # 修改资源
     change_assets(package=branch)
+
     # 修改道具
     # change_props(package=branch)
+
     # 修改GM
     change_gm(package=branch)
+
     # 临时将关卡调至15-20
     change_stage(package=branch)
     print(summary)
