@@ -37,8 +37,11 @@ def ding_talk(content=''):
     print(result.text)
 
 
+players = ['苏成峰', '郑勇', '李涵笑', '范哲源', '王时雨', '陈乾', '王沛鸿', '徐海华']
+
+
 def get_rand_player():
-    return players[random.randint(0,len(players))]
+    return players[random.randint(0, len(players))]
 
 
 def check_time():
@@ -68,7 +71,7 @@ def timer_task():
 
 
 last_hour = 0
-players = ['苏成峰', '郑勇', '李涵笑', '范哲源', '王时雨', '陈乾', '王沛鸿', '徐海华']
+
 
 if __name__ == "__main__":
     timer = threading.Timer(2, timer_task)

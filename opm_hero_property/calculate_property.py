@@ -13,10 +13,9 @@ import opm_property_tools as tools
 # 英雄列表
 # hero_list = [1, 2, 8, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42,
 #              43, 44, 45, 46, 49, 51, 60, 61, 62, 63, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 100,
-#              101, 102, 103]
+#              101, 102, 103, 104, 105, 107, 108, 109, 110, 111, 112, 114, 115]
 
-hero_list = [115]
-
+hero_list = [12, 25, 60, 89, 116, 117, 118]
 
 # 读取设定表
 df_status = pd.read_excel('design/hero_design.xlsx', sheet_name='设定状态', index_col=0, header=0)
@@ -31,7 +30,10 @@ df_academy = pd.read_excel('design/academy.xlsx', index_col=0, header=0)
 df_level_growth = pd.read_excel('design/level_growth.xlsx', index_col=0, header=0)
 # 装备信息
 df_equip = pd.read_excel('design/equip_design.xlsx', index_col=0, header=0)
-
+# 收集卡牌信息
+df_collection_upgrade = pd.read_excel('design/collection_design.xlsx', sheet_name='upgrade', index_col=0, header=0)
+df_collection_break = pd.read_excel('design/collection_design.xlsx', sheet_name='break', index_col=0, header=0)
+df_collection_collect = pd.read_excel('design/collection_design.xlsx', sheet_name='collect', index_col=0, header=0)
 # 正式数据处理
 for _id in hero_list:
 
@@ -100,7 +102,11 @@ for _id in hero_list:
     power_job = []
     power_mechanical = []
     power_limiter = []
+    power_collection = []
     power_total = []
+
+    job_contact = []
+    pvp_addition = []
 
     _level_list = []
 
@@ -128,6 +134,9 @@ for _id in hero_list:
         _job = df_status.loc[i, '_job']
         _limiter = df_status.loc[i, '_limiter']
         _mechanical = df_status.loc[i, '_mechanical']
+        _collection_upgrade = df_status.loc[i, '_collection_upgrade']
+        _collection_break = df_status.loc[i, '_collection_break']
+        _collection_collect = df_status.loc[i, '_collection_collect']
 
         # 基础属性
         _hp_base = hp_init + df_level_growth.loc[
@@ -206,6 +215,7 @@ for _id in hero_list:
         _power_academy = tools.get_power(_hp_academy, _atk_academy, _def_academy)
 
         # 职阶属性
+        _job_contact = 0
         if _job == 0:
             _hp_job = 0
             _atk_job = 0
@@ -216,14 +226,17 @@ for _id in hero_list:
             _parry_job = 0
             _dmg_res_job = 0
         else:
-            _hp_job = df_job.loc[_job, '_hp_' + _type]
-            _atk_job = df_job.loc[_job, '_atk_' + _type]
-            _def_job = df_job.loc[_job, '_def_' + _type]
+            # 增加职阶连携
+            _hp_job = df_job.loc[_job, '_hp_' + _type] + int(_job / 10) * 0.01 * _hp_base
+            _atk_job = df_job.loc[_job, '_atk_' + _type] + int(_job / 10) * 0.01 * _atk_base
+            _def_job = df_job.loc[_job, '_def_' + _type] + int(_job / 10) * 0.01 * _def_base
             _crit_job = df_job.loc[_job, '_crit_' + _type]
             _crit_res_job = df_job.loc[_job, '_crit_res_' + _type]
             _precise_job = df_job.loc[_job, '_precise_' + _type]
             _parry_job = df_job.loc[_job, '_parry_' + _type]
             _dmg_res_job = df_job.loc[_job, '_dmg_res_' + _type]
+
+            _job_contact = int(_job / 10) * 10
 
         _power_job = tools.get_power(_hp_job, _atk_job, _def_job, _crit_job, _crit_res_job, _precise_job, _parry_job,
                                      _dmg_res_job)
@@ -391,15 +404,74 @@ for _id in hero_list:
 
         _power_limiter = tools.get_power(_hp_limiter, _atk_limiter, _def_limiter)
 
-        _hp = _hp_base + _hp_equip + _hp_talent + _hp_academy + _hp_job + _hp_mechanical + _hp_limiter
-        _atk = _atk_base + _atk_equip + _atk_talent + _atk_academy + _atk_job + _atk_mechanical + _atk_limiter
-        _def = _def_base + _def_equip + _def_talent + _def_academy + _def_job + _def_mechanical + _def_limiter
-        _crit = crit_init + _crit_equip + _crit_talent + _crit_job
-        _crit_res = _crit_res_equip + _crit_res_talent + _crit_res_job
+        _hp_collection = 0
+        _atk_collection = 0
+        _def_collection = 0
+        _hp_total_collection = 0
+        _atk_total_collection = 0
+        _def_total_collection = 0
+        _crit_collection = 0
+        _crit_res_collection = 0
+        _precise_collection = 0
+        _parry_collection = 0
+        _dmg_res_collection = 0
+        _pvp_addition = ''
+
+        if _collection_break > 0:
+            _hp_total_collection += df_collection_break.loc[_collection_break, '_total_hp_' + _type].sum()
+            _atk_total_collection += df_collection_break.loc[_collection_break, '_total_atk_' + _type].sum()
+            _def_total_collection += df_collection_break.loc[_collection_break, '_total_def_' + _type].sum()
+            _pvp_addition = '1,1,' + str(df_collection_break.loc[_collection_break, '1,1,'].sum()) + \
+                            ';2,1,' + str(df_collection_break.loc[_collection_break, '2,1,'].sum()) + \
+                            ';3,1,' + str(df_collection_break.loc[_collection_break, '3,1,'].sum()) + \
+                            ';4,1,' + str(df_collection_break.loc[_collection_break, '4,1,'].sum()) + \
+                            ';1,2,' + str(df_collection_break.loc[_collection_break, '1,2,'].sum()) + \
+                            ';2,2,' + str(df_collection_break.loc[_collection_break, '2,2,'].sum()) + \
+                            ';3,2,' + str(df_collection_break.loc[_collection_break, '3,2,'].sum()) + \
+                            ';4,2,' + str(df_collection_break.loc[_collection_break, '4,2,'].sum()) + \
+                            ';5,1,' + str(df_collection_break.loc[_collection_break, '5,1,'].sum()) + \
+                            ';5,2,' + str(df_collection_break.loc[_collection_break, '5,2,'].sum())
+
+        if _collection_upgrade > 0:
+            _hp_collection += df_collection_upgrade.loc[_collection_upgrade, '_hp_' + _type].sum()
+            _atk_collection += df_collection_upgrade.loc[_collection_upgrade, '_atk_' + _type].sum()
+            _def_collection += df_collection_upgrade.loc[_collection_upgrade, '_def_' + _type].sum()
+
+        if _collection_collect > 0:
+            _hp_collection += df_collection_collect.loc[_collection_collect, '_hp_' + _type].sum()
+            _atk_collection += df_collection_collect.loc[_collection_collect, '_atk_' + _type].sum()
+            _def_collection += df_collection_collect.loc[_collection_collect, '_def_' + _type].sum()
+            _hp_total_collection += df_collection_collect.loc[_collection_collect, '_total_hp_' + _type].sum()
+            _atk_total_collection += df_collection_collect.loc[_collection_collect, '_total_atk_' + _type].sum()
+            _def_total_collection += df_collection_collect.loc[_collection_collect, '_total_def_' + _type].sum()
+            _crit_collection += df_collection_collect.loc[_collection_collect, '_crit_' + _type].sum()
+            _crit_res_collection += df_collection_collect.loc[_collection_collect, '_crit_res_' + _type].sum()
+            _precise_collection += df_collection_collect.loc[_collection_collect, '_precise_' + _type].sum()
+            _parry_collection += df_collection_collect.loc[_collection_collect, '_parry_' + _type].sum()
+            _dmg_res_collection += df_collection_collect.loc[_collection_collect, '_dmg_res_' + _type].sum()
+
+        _hp1 = _hp_base + _hp_equip + _hp_talent + _hp_academy + _hp_job + _hp_mechanical + _hp_limiter
+        _atk1 = _atk_base + _atk_equip + _atk_talent + _atk_academy + _atk_job + _atk_mechanical + _atk_limiter
+        _def1 = _def_base + _def_equip + _def_talent + _def_academy + _def_job + _def_mechanical + _def_limiter
+        _crit1 = crit_init + _crit_equip + _crit_talent + _crit_job
+        _crit_res1 = _crit_res_equip + _crit_res_talent + _crit_res_job
+        _precise1 = _precise_equip + _precise_talent + _precise_job
+        _parry1 = _parry_equip + _parry_talent + _parry_job
+        _dmg_res1 = _dmg_res_equip + _dmg_res_talent + _dmg_res_job
+
+        _hp = (_hp1 + _hp_collection) * (1 + _hp_total_collection / 10000)
+        _atk = (_atk1 + _atk_collection) * (1 + _atk_total_collection / 10000)
+        _def = (_def1 + _def_collection) * (1 + _def_total_collection / 10000)
+        _crit = _crit1 + _crit_collection
+        _crit_res = _crit_res1 + _crit_res_collection
         _crit_dmg = 15000
-        _precise = _precise_equip + _precise_talent + _precise_job
-        _parry = _parry_equip + _parry_talent + _parry_job
-        _dmg_res = _dmg_res_equip + _dmg_res_talent + _dmg_res_job
+        _precise = _precise1 + _precise_collection
+        _parry = _parry1 + _parry_collection
+        _dmg_res = _dmg_res1 + _dmg_res_collection
+
+        _power_collection = tools.get_power(_hp - _hp1, _atk - _atk1, _def - _def1, _crit_collection,
+                                            _crit_res_collection,
+                                            _precise_collection, _parry_collection, _dmg_res_collection)
 
         _power_total = tools.get_power(_hp, _atk, _def, _crit, _crit_res, _precise, _parry, _dmg_res)
 
@@ -422,11 +494,15 @@ for _id in hero_list:
         power_job.append(_power_job)
         power_mechanical.append(_power_mechanical)
         power_limiter.append(_power_limiter)
+        power_collection.append(_power_collection)
         power_total.append(_power_total)
+
+        job_contact.append(_job_contact)
+        pvp_addition.append(_pvp_addition)
 
         _level_list.append(_level)
 
     sv.save_hero_status(_id, _level_list, df_status, final_hp, final_atk, final_def, final_crit, final_crit_res,
                         final_crit_dmg, final_precise, final_parry, final_dmg_res, final_aura, final_type_aura,
                         power_base, power_equip, power_talent, power_academy, power_job, power_mechanical,
-                        power_limiter, power_total, _limiter_on)
+                        power_limiter, power_collection, power_total, _limiter_on, job_contact, pvp_addition)

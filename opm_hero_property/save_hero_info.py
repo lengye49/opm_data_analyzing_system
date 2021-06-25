@@ -469,8 +469,8 @@ def get_skills(_level, _talent, _job, _limiter, _limiter_on):
 
 
 def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg, precise, parry, dmg_res, aura,
-                     type_aura, _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter, _p_total,
-                     limiter_on):
+                     type_aura, _p_base, _p_equip, _p_talent, _p_academy, _p_job, _p_mechanical, _p_limiter,
+                     _p_collection, _p_total, limiter_on, job_contact, pvp_addition):
     wb = get_wb(hero_id)
     ws = get_ws(wb, 'status')
 
@@ -514,15 +514,19 @@ def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg,
     ws['AI1'] = 'mechanical'
     ws['AJ1'] = 'aura'
     ws['AK1'] = 'type_aura'
+    ws['AL1'] = 'job_contact'
+    ws['AM1'] = 'attr_addition'
+    ws['AN1'] = 'pvp_addition'
 
-    ws['AL1'] = '基础战力'
-    ws['AM1'] = '装备战力'
-    ws['AN1'] = '天赋战力'
-    ws['AO1'] = '研究所战力'
-    ws['AP1'] = '职阶战力'
-    ws['AQ1'] = '机械核心战力'
-    ws['AR1'] = '限制器战力'
-    ws['AS1'] = '总战力'
+    ws['AO1'] = '基础战力'
+    ws['AP1'] = '装备战力'
+    ws['AQ1'] = '天赋战力'
+    ws['AR1'] = '研究所战力'
+    ws['AS1'] = '职阶战力'
+    ws['AT1'] = '机械核心战力'
+    ws['AU1'] = '限制器战力'
+    ws['AV1'] = '收集战力'
+    ws['AW1'] = '总战力'
 
     ll = df.index.values
     for i in range(0, len(ll)):
@@ -567,14 +571,18 @@ def save_hero_status(hero_id, levels, df, hp, atk, de, crit, crit_res, crit_dmg,
         ws['AI' + str(i + 2)] = df.loc[k, '_mechanical']
         ws['AJ' + str(i + 2)] = aura[i]
         ws['AK' + str(i + 2)] = type_aura[i]
+        ws['AL' + str(i + 2)] = job_contact[i]
+        ws['AM' + str(i + 2)] = ''
+        ws['AN' + str(i + 2)] = pvp_addition[i]
 
-        ws['AL' + str(i + 2)] = _p_base[i]
-        ws['AM' + str(i + 2)] = _p_equip[i]
-        ws['AN' + str(i + 2)] = _p_talent[i]
-        ws['AO' + str(i + 2)] = _p_academy[i]
-        ws['AP' + str(i + 2)] = _p_job[i]
-        ws['AQ' + str(i + 2)] = _p_mechanical[i]
-        ws['AR' + str(i + 2)] = _p_limiter[i]
-        ws['AS' + str(i + 2)] = _p_total[i]
+        ws['AO' + str(i + 2)] = _p_base[i]
+        ws['AP' + str(i + 2)] = _p_equip[i]
+        ws['AQ' + str(i + 2)] = _p_talent[i]
+        ws['AR' + str(i + 2)] = _p_academy[i]
+        ws['AS' + str(i + 2)] = _p_job[i]
+        ws['AT' + str(i + 2)] = _p_mechanical[i]
+        ws['AU' + str(i + 2)] = _p_limiter[i]
+        ws['AV' + str(i + 2)] = _p_collection[i]
+        ws['AW' + str(i + 2)] = _p_total[i]
 
     wb.save(path)
