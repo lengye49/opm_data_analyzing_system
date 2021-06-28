@@ -16,3 +16,15 @@ class UserResource:
             self.__cur_day = day
         else:
             raise RuntimeError(f'Error cur day: {day} __cur_day: {self.__cur_day}')
+
+    def gain(self, resource, way_type):
+        self.resource.gain(resource)
+
+        # 记录获得信息
+        if self.__cur_day not in self.__dict_gain_history:
+            self.__dict_gain_history[self.__cur_day] = dict(total=Resource())
+        if way_type not in self.__dict_gain_history[self.__cur_day]:
+            self.__dict_gain_history[self.__cur_day][way_type] = Resource()
+        self.__dict_gain_history[self.__cur_day][way_type].gain(resource)
+        self.__dict_gain_history[self.__cur_day]['total'].gain(resource)
+        return

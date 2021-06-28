@@ -96,3 +96,6 @@ import numpy as np
 # print('正在检测处理俄语：')
 # language.apply(lambda x:check_is_error(x[0],str(x[1])),axis=1)
 # print('处理完毕')
+
+for i in range(10,10):
+    print(i)

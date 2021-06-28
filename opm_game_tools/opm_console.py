@@ -53,6 +53,8 @@ http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=562949953421650&
 http://center-mpsen-dev.games.oasgames.com:8010/admin/magic?uid=18577348462903345&heroId=36&mechanical=20&limiter=5&server_id=66&action=hero/actionUpgradeHeroInfo   
 查看开服时间列表
 http://center-mpsen.games.oasgames.com:8010/admin/getServerInitTime
+测试卡包概率
+http://center-mpsen-stage.games.oasgames.com:8010/admin/magic?server_id=2&sid=1&c=1000&action=Collect/simulate
     """
     print(s)
 
