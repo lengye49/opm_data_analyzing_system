@@ -37,11 +37,8 @@ def ding_talk(content=''):
     print(result.text)
 
 
-players = ['苏成峰', '郑勇', '李涵笑', '范哲源', '王时雨', '陈乾', '王沛鸿', '徐海华']
-
-
 def get_rand_player():
-    return players[random.randint(0, len(players))]
+    return players[random.randint(0,len(players)-1)]
 
 
 def check_time():
@@ -49,20 +46,24 @@ def check_time():
 
     global last_hour
     if now_hour in [11, 15, 17] and last_hour != now_hour:
-        standard_day = datetime.date(2021, 6, 13)
-        curr_day = datetime.date.today()
-        w = (curr_day - standard_day).days % 7
-        s = '这一轮有请 -->' + get_rand_player() + '<-- 带头锻炼！\n\n'
-        if w in [1, 2, 3, 4, 5]:
-            ding_talk('到点了！\n\n来呀，动起来！Come On Baby！\n\n' + s)
+        if last_hour == 0:
+            ding_talk(update_language)
         else:
-            ding_talk('到点了！\n\n虽然是周末，也不要懈怠哦！动起来吧！\n\n' + s)
+            standard_day = datetime.date(2021, 6, 13)
+            curr_day = datetime.date.today()
+            w = (curr_day - standard_day).days % 7
+            s = '这一轮有请 -->' + get_rand_player() + '<-- 带头锻炼！\n\n'
+            if w in [1, 2, 3, 4, 5]:
+                ding_talk('到点了！\n\n来呀，动起来！Come On Baby！\n\n' + s)
+            else:
+                print('weekend.')
 
     last_hour = now_hour
 
 
 def timer_task():
     print(time.strftime("%Y-%m-%d, %H:%M:%S", time.localtime()))
+    # ding_talk(update_language)
     check_time()
 
     global timer
@@ -71,7 +72,8 @@ def timer_task():
 
 
 last_hour = 0
-
+players = ['苏成峰', '郑勇', '李涵笑', '范哲源', '王时雨', '徐海华', '刘永南', '王沛鸿']
+update_language = '小宝更新：周末不再打扰大家休息。\n\n另外，欢迎新成员 - 石雨欣<妹子！>\n\n计时重新开始！'
 
 if __name__ == "__main__":
     timer = threading.Timer(2, timer_task)
